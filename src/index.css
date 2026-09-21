@@ -1,0 +1,400 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ease-osmo: cubic-bezier(0.625, 0.05, 0, 1);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Loaded from Google Fonts in index.html (Next.js used next/font before). */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Never allow sideways scroll — clip (not hidden) so position:sticky keeps
+   working. */
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  background-color: #0a2b31; /* petrol deep */
+  color: #e9e6dd; /* cream */
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: #f0573f; /* brand coral */
+  color: #e9e6dd;
+}
+
+/* Vertical column guides (the reference site's .guides): four evenly
+   spaced hairlines behind a section, from the second column on. */
+.guides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.guides > span {
+  border-left: 1px solid rgba(233, 230, 221, 0.14);
+}
+.guides > span:first-child {
+  border-left: 0;
+}
+.guides--dark > span {
+  border-left-color: rgba(15, 61, 52, 0.12);
+}
+@media (max-width: 1099px) {
+  .guides {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .guides > span:nth-child(n + 3) {
+    display: none;
+  }
+}
+@media (max-width: 759px) {
+  .guides {
+    display: none;
+  }
+}
+
+/* Character roll-up hover, matching [data-button-animate-chars]: the
+   label sits over a copy of itself one line-height below (text-shadow),
+   and on hover the whole thing lifts by 1.15em so the copy takes its
+   place. Put .roll on the hover target, wrap the label in .roll-clip. */
+.roll-clip {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  vertical-align: bottom;
+  line-height: 1.05;
+  /* Headroom so ascenders/diacritics (Ö, Å, Ä) are not cropped — the
+     reference labels are English and never needed it. */
+  padding-top: 0.22em;
+  margin-top: -0.22em;
+}
+.roll-clip > span {
+  display: inline-block;
+  position: relative;
+  text-shadow: 0 1.15em currentColor;
+  transform: translateY(0) rotate(0.001deg);
+  transition: transform 0.6s var(--ease-osmo);
+}
+.roll:hover .roll-clip > span,
+.roll.is-active .roll-clip > span {
+  transform: translateY(-1.15em) rotate(0.001deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .roll-clip > span {
+    transition: none;
+  }
+}
+
+/* Primary CTA, matching the reference site's .button-009: a pill whose
+   right arrow slides out and left arrow slides in while the label shifts
+   across, on hover. */
+.cta009 {
+  display: inline-grid;
+  position: relative;
+  color: #e9e6dd; /* sand text on the forest pill */
+  font-family: var(--font-body), sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-decoration: none;
+  transition: scale 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cta009:active {
+  scale: 0.955 0.925;
+}
+.cta009__inner {
+  grid-area: 1/1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375em;
+  padding: 0.85em 0.85em 0.85em 1.25em;
+  border-radius: 2.5em;
+  overflow: clip;
+}
+.cta009__bg {
+  grid-area: 1/1;
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5em;
+  background: #f0573f; /* brand coral — pops on both petrol and sand */
+  transition: background-color 0.25s ease;
+}
+.cta009:hover .cta009__bg {
+  background: #d8452f;
+}
+/* On dark petrol sections: a sand pill with petrol text (matches the
+   brand mockups). */
+.cta009--light {
+  color: #103d45;
+}
+.cta009--light .cta009__bg {
+  background: #e9e6dd;
+}
+.cta009--light:hover .cta009__bg {
+  background: #a9b8b5; /* soft marine on hover */
+}
+/* Marine accent pill — stays legible over any section, used for the fixed
+   header CTA that scrolls over both petrol and sand. */
+.cta009--accent {
+  color: #1a1a1a;
+}
+.cta009--accent .cta009__bg {
+  background: #a9b8b5;
+}
+.cta009--accent:hover .cta009__bg {
+  background: #8fa3a0;
+}
+.cta009__text {
+  flex: none;
+  white-space: nowrap;
+  transition: translate 0.5s var(--ease-osmo);
+}
+.cta009__icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: none;
+  transition:
+    translate 0.5s var(--ease-osmo),
+    opacity 0.15s ease-out;
+}
+.cta009__icon--left {
+  position: absolute;
+  left: 0.85em;
+  opacity: 0;
+  translate: -1.5em 0;
+}
+.cta009--full {
+  width: 100%;
+}
+.cta009--full .cta009__inner {
+  justify-content: center;
+}
+.cta009--full .cta009__icon--left {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cta009:hover .cta009__text,
+  .cta009:focus-visible .cta009__text {
+    translate: calc(0.75rem + 0.375em + 0.85em - 1.25em) 0;
+    transition: translate 0.5s 75ms var(--ease-osmo);
+  }
+  .cta009:hover .cta009__icon--left,
+  .cta009:focus-visible .cta009__icon--left {
+    translate: 0 0;
+    opacity: 1;
+    transition:
+      translate 0.5s 75ms var(--ease-osmo),
+      opacity 0.15s 75ms ease-out;
+  }
+  .cta009:hover .cta009__icon--right,
+  .cta009:focus-visible .cta009__icon--right {
+    translate: 1.5em 0;
+    opacity: 0;
+  }
+}
+
+/* Squares page-transition (grid of forest cells that wipe away). */
+.pagewipe {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  pointer-events: none;
+}
+.pagewipe span {
+  background: #0a2b31;
+  opacity: 0;
+  transform: scale(0.6);
+  transform-origin: center;
+  transition:
+    opacity 0.5s var(--ease-osmo),
+    transform 0.5s var(--ease-osmo);
+}
+.pagewipe.is-covered span {
+  opacity: 1;
+  transform: scale(1.02);
+}
+/* Only the very first paint applies the covered state without animating. */
+.pagewipe.is-instant span {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pagewipe {
+    display: none;
+  }
+}
+
+/* Hero content rise-in (reference heroRise), staggered. */
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-rise {
+  opacity: 0;
+  animation: heroRise 0.7s var(--ease-osmo) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Scroll indicator drop (reference .hero-scroll .bar railDrop). */
+.hero-drop {
+  transform: translateY(-100%);
+  animation: heroDrop 2.2s var(--ease-osmo) infinite;
+}
+@keyframes heroDrop {
+  0% {
+    transform: translateY(-100%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-drop {
+    animation: none;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Grow-in accent bars under figures + bars that build "in real time" once
+   their Reveal wrapper enters the viewport. */
+.grow-x {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-osmo);
+}
+.reveal-visible .grow-x {
+  transform: scaleX(1);
+}
+
+/* Leading dot that pulses at the end of a drawing line. */
+@keyframes tx-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    r: 1.6px;
+  }
+  50% {
+    opacity: 0.45;
+    r: 2.4px;
+  }
+}
+.tx-pulse {
+  animation: tx-pulse 1.6s ease-in-out infinite;
+}
+
+/* Pod pulse ring for the patient-journey scene. */
+@keyframes pj-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.9);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.pj-pulse {
+  animation: pj-pulse 2.4s ease-out infinite;
+}
+/* Cursor click ripple. */
+@keyframes pj-click {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+.pj-click {
+  animation: pj-click 0.5s ease-out;
+}
+/* Confirmation check pop. */
+@keyframes pj-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.pj-pop {
+  animation: pj-pop 0.5s var(--ease-osmo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pj-pulse,
+  .pj-click,
+  .pj-pop {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
