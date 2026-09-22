@@ -1,12 +1,9 @@
 import type { Article } from "@/lib/articles";
 
 // Map an article's kicker/topic to a type: an icon (the real platform logo
-// where it fits the topic) and an accent label. Used to specialise each
-// article's header by type, per the brief.
-type TypeKey = "google-ads" | "seo" | "local" | "web" | "growth" | "rules" | "measure";
-
+// where it fits the topic) and an accent label. Specialises each article by
+// type, per the brief.
 type TypeMeta = {
-  key: TypeKey;
   label: string;
   icon: string | null; // path in /public, or null → inline SVG
   glyph?: "growth" | "shield" | "chart";
@@ -14,14 +11,14 @@ type TypeMeta = {
 
 export function articleType(a: Article): TypeMeta {
   const k = a.kicker.toLowerCase();
-  if (k.includes("google ads")) return { key: "google-ads", label: "Google Ads", icon: "/icons/google-ads.png" };
-  if (k.includes("hemsida")) return { key: "web", label: "Hemsida", icon: "/icons/wordpress.png" };
-  if (k.includes("lokal")) return { key: "local", label: "Lokal SEO", icon: "/icons/google.png" };
-  if (k.includes("seo")) return { key: "seo", label: "SEO", icon: "/icons/google.png" };
-  if (k.includes("ai")) return { key: "seo", label: "AI-sök", icon: "/icons/google.png" };
-  if (k.includes("mät")) return { key: "measure", label: "Mätning", icon: null, glyph: "chart" };
-  if (k.includes("juridik")) return { key: "rules", label: "Juridik", icon: null, glyph: "shield" };
-  return { key: "growth", label: a.kicker, icon: null, glyph: "growth" };
+  if (k.includes("google ads")) return { label: "Google Ads", icon: "/icons/google-ads.png" };
+  if (k.includes("hemsida")) return { label: "Hemsida", icon: "/icons/wordpress.png" };
+  if (k.includes("lokal")) return { label: "Lokal SEO", icon: "/icons/google.png" };
+  if (k.includes("seo")) return { label: "SEO", icon: "/icons/google.png" };
+  if (k.includes("ai")) return { label: "AI-sök", icon: "/icons/google.png" };
+  if (k.includes("mät")) return { label: "Mätning", icon: null, glyph: "chart" };
+  if (k.includes("juridik")) return { label: "Juridik", icon: null, glyph: "shield" };
+  return { label: a.kicker, icon: null, glyph: "growth" };
 }
 
 function Glyph({ glyph }: { glyph: NonNullable<TypeMeta["glyph"]> }) {
@@ -30,7 +27,7 @@ function Glyph({ glyph }: { glyph: NonNullable<TypeMeta["glyph"]> }) {
       ? "M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"
       : glyph === "chart"
         ? "M4 19V10M10 19V4M16 19v-7M4 19h14"
-        : "M4 16l5-5 3 3 6-7M15 7h4v4"; // growth
+        : "M4 16l5-5 3 3 6-7M15 7h4v4";
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#f0573f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d={p} />
@@ -38,7 +35,7 @@ function Glyph({ glyph }: { glyph: NonNullable<TypeMeta["glyph"]> }) {
   );
 }
 
-// A small round badge with the type icon — for the hero.
+// Round badge with the type icon — used in the hero.
 export function TypeBadge({ article }: { article: Article }) {
   const t = articleType(article);
   return (
@@ -56,66 +53,41 @@ export function TypeBadge({ article }: { article: Article }) {
   );
 }
 
-// Google-style search result preview — "so here's how it shows up in Google".
-export function SerpPreview({ article }: { article: Article }) {
-  const t = articleType(article);
+function Magnifier({ className = "" }: { className?: string }) {
   return (
-    <div className="rounded-xl border border-ink/12 bg-white p-5 shadow-[0_1px_2px_rgba(15,61,52,0.06),0_24px_50px_-30px_rgba(15,61,52,0.35)]">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-sage">
-          Så här syns artikeln i Google
-        </span>
-        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink/25">
-          Exempel
-        </span>
-      </div>
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-ink/10 bg-cream">
-          {t.icon ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={t.icon} alt="" className="h-4 w-4 object-contain" />
-          ) : (
-            <Glyph glyph={t.glyph ?? "growth"} />
-          )}
-        </span>
-        <span className="leading-tight">
-          <span className="block text-[13px] font-medium text-ink">TXagency</span>
-          <span className="block text-xs text-[#4d5156]">
-            txagency.se › artiklar › {article.slug}
-          </span>
-        </span>
-      </div>
-      <div className="mt-2 font-sans text-xl leading-snug text-[#1a0dab]">
-        {article.titleTag}
-      </div>
-      <p className="mt-1 max-w-2xl text-sm leading-relaxed text-[#4d5156]">
-        {article.metaDescription}
-      </p>
-    </div>
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="m20 20-3.2-3.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 
-// "What this guide covers" — the primary + secondary keywords as chips
-// (the OTP-style chips row), which doubles as on-page keyword signal.
-export function CoverageChips({ article }: { article: Article }) {
-  const terms = [article.primaryKeyword, ...article.secondaryKeywords].filter(Boolean);
-  if (terms.length === 0) return null;
+// The searches this guide answers — the "moment of search" block: real
+// Google-style queries built from the article's keywords. Reuses the site's
+// search motif; on-brand and light (no heavy card).
+export function SearchQueries({ article }: { article: Article }) {
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const queries = Array.from(
+    new Set([article.primaryKeyword, ...article.secondaryKeywords].filter(Boolean)),
+  ).slice(0, 5);
+  if (queries.length === 0) return null;
   return (
-    <div>
-      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-sage">
-        Vad guiden täcker
+    <div className="rounded-xl border border-ink/12 bg-white/60 p-6 sm:p-7">
+      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
+        Sökningar den här guiden svarar på
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {terms.map((term) => (
-          <span
-            key={term}
-            className="rounded-full border border-ink/15 bg-white px-3 py-1.5 text-[13px] font-semibold text-ink/70"
-          >
-            {cap(term)}
-          </span>
+      <ul className="mt-4 divide-y divide-ink/10">
+        {queries.map((q) => (
+          <li key={q} className="flex items-center gap-3 py-3">
+            <Magnifier className="h-4 w-4 shrink-0 text-sage" />
+            <span className="text-base text-ink">{cap(q)}</span>
+          </li>
         ))}
-      </div>
+      </ul>
+      <p className="mt-4 text-sm leading-relaxed text-ink/50">
+        Riktiga sökningar patienter gör — guiden är skriven för att er klinik
+        ska synas på dem.
+      </p>
     </div>
   );
 }

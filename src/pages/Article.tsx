@@ -6,7 +6,7 @@ import { Nav } from "@/components/Nav";
 import { BookingButton } from "@/components/BookingButton";
 import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Reveal } from "@/components/Reveal";
-import { TypeBadge, SerpPreview, CoverageChips } from "@/components/ArticleExtras";
+import { TypeBadge, SearchQueries } from "@/components/ArticleExtras";
 import { getArticle, getArticleByNr, type Article } from "@/lib/articles";
 
 const SITE = "https://txagency.se";
@@ -148,21 +148,18 @@ function ArticleView({ article }: { article: Article }) {
           data-nav-theme="light"
           className="bg-cream px-6 py-20 lg:pl-72 lg:pr-16"
         >
-          {/* Structured top block: SERP preview + what the guide covers */}
-          <Reveal className="mb-12 max-w-2xl">
-            <div className="grid gap-8">
-              <SerpPreview article={article} />
-              <CoverageChips article={article} />
-            </div>
-          </Reveal>
+          {/* The searches this guide answers */}
+          <div className="mb-12 max-w-2xl">
+            <SearchQueries article={article} />
+          </div>
 
-          <Reveal className="max-w-2xl">
-            <div className="tx-prose prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-12 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl prose-p:text-ink/80 prose-p:leading-relaxed prose-li:text-ink/80 prose-strong:text-ink prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:text-ink prose-td:text-ink/75 prose-hr:border-ink/12">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {article.body}
-              </ReactMarkdown>
-            </div>
-          </Reveal>
+          {/* Body — rendered directly (no big transform layer, keeps scroll
+              smooth on long articles). */}
+          <div className="tx-prose prose prose-lg max-w-2xl prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-12 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl prose-p:text-ink/80 prose-p:leading-relaxed prose-li:text-ink/80 prose-strong:text-ink prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:text-ink prose-td:text-ink/75 prose-hr:border-ink/12">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {article.body}
+            </ReactMarkdown>
+          </div>
         </section>
 
         {/* Google search demo — only on the Google Ads cost guide */}
