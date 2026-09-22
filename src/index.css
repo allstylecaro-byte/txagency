@@ -398,3 +398,49 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Custom range slider for the interactive calculators (filled track + thumb).
+   The fill is set inline per value; this styles the rail height and thumb. */
+.tx-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+}
+.tx-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #f0573f;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.12s var(--ease-osmo);
+}
+.tx-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.tx-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.tx-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #f0573f;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+.tx-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: transparent;
+}
+.tx-range:focus-visible {
+  outline: 2px solid #f0573f;
+  outline-offset: 3px;
+}

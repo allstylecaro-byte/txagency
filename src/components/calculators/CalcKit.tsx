@@ -66,13 +66,19 @@ export function CalcSlider({
   variant?: Variant;
 }) {
   const dark = variant === "dark";
+  const pct = max > min ? ((value - min) / (max - min)) * 100 : 0;
+  const track = dark ? "rgba(233,230,221,0.16)" : "rgba(16,61,69,0.12)";
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3">
         <label className={`text-[13px] font-semibold ${dark ? "text-cream/80" : "text-ink/80"}`}>
           {label}
         </label>
-        <span className={`font-display text-sm font-bold tabular-nums ${dark ? "text-cream" : "text-ink"}`}>
+        <span
+          className={`rounded-md px-2 py-0.5 font-display text-sm font-bold tabular-nums ${
+            dark ? "bg-cream/10 text-cream" : "bg-ink/[0.06] text-ink"
+          }`}
+        >
           {prefix}
           {formatNum(value)}
           {unit}
@@ -85,11 +91,14 @@ export function CalcSlider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-2 w-full cursor-pointer accent-brand"
+        className="tx-range mt-2.5 w-full cursor-pointer"
+        style={{
+          background: `linear-gradient(to right, #f0573f 0%, #f0573f ${pct}%, ${track} ${pct}%, ${track} 100%)`,
+        }}
         aria-label={label}
       />
       {hint && (
-        <p className={`mt-1 text-[11px] leading-snug ${dark ? "text-cream/40" : "text-ink/45"}`}>
+        <p className={`mt-1.5 text-[11px] leading-snug ${dark ? "text-cream/40" : "text-ink/45"}`}>
           {hint}
         </p>
       )}

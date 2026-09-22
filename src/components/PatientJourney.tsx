@@ -68,12 +68,11 @@ function ArrowUR({ s = 12 }: { s?: number }) {
 }
 
 const CAPS = [
-  { n: "01", title: "Det börjar med en värk", body: "03:00 på natten. Någon i ert område vaknar av en värk som inte går att sova bort." },
-  { n: "02", title: "De tar upp telefonen", body: "Halvvaken, i mörkret. Första reflexen är att hitta hjälp — nu, inte imorgon." },
-  { n: "03", title: "De söker på Google", body: "”tandimplantat nära mig”. Frågan är bara: vem dyker upp överst — och ser rätt ut?" },
-  { n: "04", title: "De klickar in på er sida", body: "En snabb, tydlig sida byggd för exakt det de söker — med bokning och nummer överst." },
-  { n: "05", title: "De bokar direkt", body: "Formuläret tar 30 sekunder. Numret finns kvar om de hellre vill ringa." },
-  { n: "06", title: "Bekräftat", body: "En ny patient i kalendern — spårad hela vägen tillbaka till sökningen." },
+  { n: "01", title: "Det börjar med en värk", body: "03:00 på natten vaknar någon i ert område av en värk som inte går att sova bort — och tar upp telefonen för att hitta hjälp nu, inte imorgon." },
+  { n: "02", title: "De söker på Google", body: "”tandimplantat nära mig”. Frågan är bara: vem dyker upp överst — och ser rätt ut?" },
+  { n: "03", title: "De klickar in på er sida", body: "En snabb, tydlig sida byggd för exakt det de söker — med bokning och nummer överst." },
+  { n: "04", title: "De bokar direkt", body: "Formuläret tar 30 sekunder. Numret finns kvar om de hellre vill ringa." },
+  { n: "05", title: "Bekräftat", body: "En ny patient i kalendern — spårad hela vägen tillbaka till sökningen." },
 ];
 const N = CAPS.length; // 6 steps
 const SW = 300;
@@ -450,33 +449,6 @@ function ScreenDone(_p: { cp: number }) {
   );
 }
 
-// The exact glossy 3D tooth that hurts — floated on a soft warm halo (no hard
-// disc edge) with a coral "pain" glow, shown before the phone appears.
-function ToothPain() {
-  return (
-    <div className="pointer-events-none relative flex items-center justify-center" aria-hidden="true">
-      {/* soft warm halo so the tooth's light backdrop reads as an intentional
-          glow that melts into the section — not a hard white circle */}
-      <span className="absolute left-1/2 top-[46%] h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: "radial-gradient(circle, rgba(233,230,221,0.22), transparent 68%)" }} />
-      <span className="absolute left-1/2 top-[58%] h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/20 blur-3xl" />
-      <div
-        className="relative"
-        style={{
-          width: 380,
-          height: 460,
-          filter: "drop-shadow(0 34px 46px rgba(0,0,0,0.55))",
-          WebkitMaskImage: "radial-gradient(circle at 50% 43%, #000 24%, transparent 58%)",
-          maskImage: "radial-gradient(circle at 50% 43%, #000 24%, transparent 58%)",
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/tooth.png" alt="" className="h-full w-full select-none" style={{ objectFit: "cover", objectPosition: "50% 42%" }} />
-      </div>
-      <span className="absolute right-4 top-10 rotate-6 whitespace-nowrap rounded-full bg-brand px-3 py-1 text-[12px] font-bold text-cream shadow-lg shadow-brand/30">Aj! Det gör ont</span>
-    </div>
-  );
-}
-
 export function PatientJourney() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [p, setP] = useState(0);
@@ -517,11 +489,7 @@ export function PatientJourney() {
   const posE = dwell(raw);
 
   const phoneScreens = [ScreenLock, ScreenGoogle, ScreenSite, ScreenBook, ScreenDone];
-  const spos = posE - 1; // 0 => lock at full
-  const toothOut = ease(clamp(posE / 0.7)); // tooth fully gone by 0.7
-  const phoneReveal = ease(clamp((posE - 0.7) / 0.3)); // phone appears only after the tooth is gone
-  const phoneScale = lerp(0.92, 1, phoneReveal);
-  const phoneOpacity = phoneReveal;
+  const spos = posE; // 0 => lock screen at full (the phone is the whole story now)
 
   const fr = raw - Math.floor(raw);
   const cross = Math.sin(clamp((fr - 0.35) / 0.4) * Math.PI);
@@ -532,9 +500,6 @@ export function PatientJourney() {
       {/* ---------- Desktop: pinned demo ---------- */}
       <div ref={wrapRef} className="relative hidden lg:block" style={{ height: `calc(100vh + ${(N - 1) * 120 + 100}vh)` }}>
         <div className="sticky top-0 h-screen overflow-hidden">
-          <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 46%, rgba(240,87,63,0.10), transparent 60%)" }} aria-hidden="true" />
-          <div className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "linear-gradient(rgba(233,230,221,1) 1px, transparent 1px), linear-gradient(90deg, rgba(233,230,221,1) 1px, transparent 1px)", backgroundSize: "64px 64px" }} aria-hidden="true" />
-
           {/* progress bar only — no labels */}
           <div className="pointer-events-none absolute left-1/2 top-10 z-30 -translate-x-1/2">
             <div className="h-[3px] w-48 overflow-hidden rounded-full bg-cream/12">
@@ -542,23 +507,12 @@ export function PatientJourney() {
             </div>
           </div>
 
-          {/* Scaled stage: phone + tooth + side captions scale together so the
-              phone fits shorter laptop viewports without clipping. */}
+          {/* Scaled stage: phone + side captions scale together so the phone
+              fits shorter laptop viewports without clipping. */}
           <div className="absolute inset-0" style={{ transform: `scale(${stage})`, transformOrigin: "center center" }}>
-          {/* PHONE + tooth intro */}
+          {/* PHONE */}
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-            {phoneReveal > 0.001 && (
-              <span className="absolute left-1/2 top-1/2 h-[118%] w-[128%] -translate-x-1/2 -translate-y-1/2 rounded-[70px] bg-brand/10 blur-3xl" style={{ opacity: phoneOpacity }} aria-hidden="true" />
-            )}
-            {toothOut < 0.999 && (
-              <div
-                className="absolute left-1/2 top-1/2 z-30 -translate-x-1/2 -translate-y-1/2"
-                style={{ opacity: 1 - toothOut, transform: `translate(-50%,-50%) scale(${lerp(1, 1.18, toothOut)}) translateY(${-toothOut * 40}px)` }}
-              >
-                <ToothPain />
-              </div>
-            )}
-            <div className="relative rounded-[58px] p-[2px]" style={{ background: "linear-gradient(150deg,#4a5560,#0b0d10 42%,#39424c 82%)", opacity: phoneOpacity, transform: `scale(${phoneScale * pushScale})`, display: phoneReveal <= 0.001 ? "none" : undefined }}>
+            <div className="relative rounded-[58px] p-[2px]" style={{ background: "linear-gradient(150deg,#4a5560,#0b0d10 42%,#39424c 82%)", transform: `scale(${pushScale})` }}>
               <span className="absolute -left-[3px] top-[128px] h-8 w-[3px] rounded-l bg-[#20262c]" aria-hidden="true" />
               <span className="absolute -left-[3px] top-[172px] h-12 w-[3px] rounded-l bg-[#20262c]" aria-hidden="true" />
               <span className="absolute -left-[3px] top-[232px] h-12 w-[3px] rounded-l bg-[#20262c]" aria-hidden="true" />
