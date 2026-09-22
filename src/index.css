@@ -228,8 +228,8 @@ body {
   transform: scale(0.6);
   transform-origin: center;
   transition:
-    opacity 0.5s var(--ease-osmo),
-    transform 0.5s var(--ease-osmo);
+    opacity 0.34s var(--ease-osmo),
+    transform 0.34s var(--ease-osmo);
 }
 .pagewipe.is-covered span {
   opacity: 1;

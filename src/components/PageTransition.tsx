@@ -14,8 +14,13 @@ const CELLS = Array.from({ length: COLS * ROWS }, (_, i) => ({
   r: Math.floor(i / COLS),
   c: i % COLS,
 }));
+// Per-cell stagger and the cell transition duration (kept in sync with the
+// `.pagewipe span` transition in index.css). Snappy so navigation never feels
+// like it hangs before the new page appears.
+const STAGGER_MS = 12;
+const CELL_MS = 340;
 // Longest stagger (bottom-right cell) + the cell transition duration.
-const COVER_MS = (COLS - 1 + (ROWS - 1)) * 24 + 520;
+const COVER_MS = (COLS - 1 + (ROWS - 1)) * STAGGER_MS + CELL_MS;
 
 export function PageTransition() {
   const pathname = useLocation().pathname;
@@ -84,7 +89,7 @@ export function PageTransition() {
       }`}
     >
       {CELLS.map(({ r, c }, i) => (
-        <span key={i} style={{ transitionDelay: `${(c + r) * 24}ms` }} />
+        <span key={i} style={{ transitionDelay: `${(c + r) * STAGGER_MS}ms` }} />
       ))}
     </div>
   );

@@ -359,6 +359,9 @@ function ToothPain() {
 export function PatientJourney() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [p, setP] = useState(0);
+  // Scale the whole phone + caption stage down on short viewports so the
+  // 650px phone never gets clipped top/bottom (13" laptops are ~700px tall).
+  const [stage, setStage] = useState(1);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -372,12 +375,18 @@ export function PatientJourney() {
         setP(clamp(total > 0 ? -rect.top / total : 0));
       });
     };
-    onScroll();
+    const onResize = () => {
+      // Phone (650) + breathing room needs ~770px; scale down proportionally
+      // below that, floor at 0.72 so it stays legible.
+      setStage(clamp((window.innerHeight - 24) / 770, 0.72, 1));
+      onScroll();
+    };
+    onResize();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -412,6 +421,9 @@ export function PatientJourney() {
             </div>
           </div>
 
+          {/* Scaled stage: phone + tooth + side captions scale together so the
+              phone fits shorter laptop viewports without clipping. */}
+          <div className="absolute inset-0" style={{ transform: `scale(${stage})`, transformOrigin: "center center" }}>
           {/* PHONE + tooth intro */}
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
             {phoneReveal > 0.001 && (
@@ -473,6 +485,7 @@ export function PatientJourney() {
               </div>
             );
           })}
+          </div>
 
           {/* scroll cue */}
           <div className="pointer-events-none absolute bottom-9 left-1/2 z-20 -translate-x-1/2" style={{ opacity: clamp(1 - posE / (N - 1)) }}>

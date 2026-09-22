@@ -10,10 +10,18 @@ import Articles from "@/pages/Articles";
 import Article from "@/pages/Article";
 
 // Scroll to top on route change (hash links still scroll within a page).
+// The page uses `scroll-behavior: smooth` globally, so we temporarily force
+// an instant jump here — otherwise navigating from far down a long page
+// animates a visible scroll-up under the transition cover.
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
-    if (!hash) window.scrollTo(0, 0);
+    if (hash) return;
+    const el = document.documentElement;
+    const prev = el.style.scrollBehavior;
+    el.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+    el.style.scrollBehavior = prev;
   }, [pathname, hash]);
   return null;
 }
