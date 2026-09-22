@@ -1,228 +1,129 @@
+import { useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Nav } from "@/components/Nav";
-import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { BookingButton } from "@/components/BookingButton";
-import { HighlightReveal } from "@/components/HighlightReveal";
+import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Reveal } from "@/components/Reveal";
-import { articles, getArticle, type Section } from "@/lib/articles";
+import { getArticle, getArticleByNr, type Article } from "@/lib/articles";
 
-function Magnifier() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className="mt-0.5 h-4 w-4 shrink-0 text-sage"
-    >
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
-      <path
-        d="M20 20L17 17"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+const SITE = "https://txagency.se";
 
-// Render a query, styling any {placeholder} as a dashed-underline token.
-function Query({ text }: { text: string }) {
-  const parts = text.split(/(\{[^}]+\})/g);
-  return (
-    <span className="text-lg text-ink">
-      {parts.map((p, i) =>
-        p.startsWith("{") ? (
-          <span
-            key={i}
-            className="text-sage [text-decoration:underline_dashed] [text-underline-offset:4px]"
-          >
-            {p.slice(1, -1)}
-          </span>
-        ) : (
-          <span key={i}>{p}</span>
-        ),
-      )}
-    </span>
-  );
-}
+// Client-side SEO: title, meta description, canonical, Open Graph and an
+// Article JSON-LD block. (For full crawl-time SEO, deploy with SSR/prerender —
+// e.g. Vercel + Next — but this covers on-page signals for an SPA.)
+function useArticleSeo(article: Article) {
+  useEffect(() => {
+    const url = `${SITE}/artiklar/${article.slug}`;
+    document.title = article.titleTag;
 
-function SectionView({ section, index }: { section: Section; index: number }) {
-  const pad = "px-6 py-24 lg:pl-72 lg:pr-16";
+    const set = (sel: string, attr: string, val: string, create: () => HTMLElement) => {
+      let el = document.head.querySelector(sel) as HTMLElement | null;
+      if (!el) {
+        el = create();
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, val);
+      return el;
+    };
 
-  if (section.kind === "search") {
-    return (
-      <section data-nav-theme="light" className={`bg-cream ${pad}`}>
-        <Reveal className="max-w-2xl">
-          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
-            {section.kicker}
-          </div>
-          <HighlightReveal
-            as="h2"
-            barTheme="light"
-            className="mt-4 font-display text-3xl font-bold leading-tight tracking-tightest text-ink sm:text-4xl md:text-5xl"
-            lines={section.heading}
-          />
-        </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
-          <Reveal className="flex flex-col gap-5">
-            {section.body.map((p) => (
-              <p key={p} className="max-w-xl text-lg leading-relaxed text-ink/80">
-                {p}
-              </p>
-            ))}
-          </Reveal>
-          <Reveal delay={100}>
-            <div className="border-t border-ink/15">
-              {section.queries.map((q) => (
-                <div
-                  key={q}
-                  className="flex items-start gap-3 border-b border-ink/15 py-4"
-                >
-                  <Magnifier />
-                  <Query text={q} />
-                </div>
-              ))}
-            </div>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-sage">
-              {section.caption}
-            </p>
-          </Reveal>
-        </div>
-      </section>
-    );
-  }
+    set('meta[name="description"]', "content", article.metaDescription, () => {
+      const m = document.createElement("meta");
+      m.setAttribute("name", "description");
+      return m;
+    });
+    set('meta[name="keywords"]', "content", [article.primaryKeyword, ...article.secondaryKeywords].join(", "), () => {
+      const m = document.createElement("meta");
+      m.setAttribute("name", "keywords");
+      return m;
+    });
+    set('link[rel="canonical"]', "href", url, () => {
+      const l = document.createElement("link");
+      l.setAttribute("rel", "canonical");
+      return l;
+    });
+    set('meta[property="og:title"]', "content", article.titleTag, () => {
+      const m = document.createElement("meta");
+      m.setAttribute("property", "og:title");
+      return m;
+    });
+    set('meta[property="og:description"]', "content", article.metaDescription, () => {
+      const m = document.createElement("meta");
+      m.setAttribute("property", "og:description");
+      return m;
+    });
+    set('meta[property="og:type"]', "content", "article", () => {
+      const m = document.createElement("meta");
+      m.setAttribute("property", "og:type");
+      return m;
+    });
 
-  if (section.kind === "build") {
-    return (
-      <section data-nav-theme="light" className={`bg-cream-soft ${pad}`}>
-        <Reveal className="max-w-3xl">
-          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
-            {section.kicker}
-          </div>
-          <HighlightReveal
-            as="h2"
-            barTheme="light"
-            className="mt-4 font-display text-3xl font-bold leading-tight tracking-tightest text-ink sm:text-4xl"
-            lines={section.heading}
-          />
-          {section.lede && (
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink/70">
-              {section.lede}
-            </p>
-          )}
-        </Reveal>
-        <div className="mt-12 border-t border-ink/15">
-          {section.items.map((item, i) => (
-            <Reveal key={item.title} delay={i * 70}>
-              <div className="grid grid-cols-1 gap-3 border-b border-ink/15 py-8 lg:grid-cols-[minmax(0,18rem)_1fr] lg:gap-12">
-                <h3 className="flex items-baseline gap-3 font-display text-xl font-bold tracking-tightest text-ink">
-                  <span className="mt-1 h-2.5 w-2.5 shrink-0 bg-brand" aria-hidden="true" />
-                  {item.title}
-                </h3>
-                <p className="max-w-2xl text-base leading-relaxed text-ink/70">
-                  {item.body}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-    );
-  }
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.setAttribute("data-article-ld", "1");
+    ld.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: article.h1,
+      description: article.metaDescription,
+      about: article.primaryKeyword,
+      inLanguage: "sv-SE",
+      mainEntityOfPage: url,
+      author: { "@type": "Organization", name: "TXagency" },
+      publisher: { "@type": "Organization", name: "TXagency" },
+    });
+    document.head.appendChild(ld);
 
-  // prose
-  const dark = section.theme !== "light";
-  return (
-    <section
-      data-nav-theme={dark ? "dark" : "light"}
-      className={`${dark ? "bg-ink" : "bg-cream"} ${pad}`}
-    >
-      <Reveal className="max-w-3xl">
-        <div
-          className={`text-[10px] font-bold uppercase tracking-[0.14em] ${
-            dark ? "text-brand-light" : "text-brand"
-          }`}
-        >
-          {section.kicker}
-        </div>
-        <HighlightReveal
-          as="h2"
-          barTheme={dark ? "dark" : "light"}
-          className={`mt-4 font-display text-3xl font-bold leading-tight tracking-tightest sm:text-4xl ${
-            dark ? "text-cream" : "text-ink"
-          }`}
-          lines={section.heading}
-        />
-        <div className="mt-6 flex flex-col gap-5">
-          {section.body.map((p) => (
-            <p
-              key={p}
-              className={`max-w-2xl text-lg leading-relaxed ${
-                dark ? "text-cream/70" : "text-ink/70"
-              }`}
-            >
-              {p}
-            </p>
-          ))}
-        </div>
-      </Reveal>
-    </section>
-  );
+    return () => {
+      document.head
+        .querySelectorAll("script[data-article-ld]")
+        .forEach((n) => n.remove());
+    };
+  }, [article]);
 }
 
 export default function ArticlePage() {
   const { slug } = useParams();
   const article = getArticle(slug ?? "");
   if (!article) return <Navigate to="/artiklar" replace />;
+  return <ArticleView article={article} />;
+}
+
+function ArticleView({ article }: { article: Article }) {
+  useArticleSeo(article);
+
+  const related = article.linksOut
+    .map((nr) => getArticleByNr(nr))
+    .filter((a): a is Article => Boolean(a))
+    .slice(0, 4);
 
   return (
     <>
       <Nav />
       <main>
-        {/* Trade-style hero (dark) */}
+        {/* Hero (dark) */}
         <section
           data-nav-theme="dark"
-          className="relative bg-ink-deep px-6 pb-24 pt-32 lg:pl-72 lg:pr-16 lg:pt-40"
+          className="relative bg-ink-deep px-6 pb-20 pt-32 lg:pl-72 lg:pr-16 lg:pt-40"
         >
-          <div
-            className="guides pointer-events-none absolute inset-0 lg:pl-56"
-            aria-hidden="true"
-          >
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="relative max-w-4xl">
-            <nav
-              aria-label="Brödsmulor"
-              className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-cream/50"
-            >
-              <a href="/" className="hover:text-cream">
-                Hem
-              </a>
-              <span aria-hidden="true" className="h-1 w-1 bg-cream/25" />
+          <div className="max-w-3xl">
+            <nav className="flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-cream/40">
               <a href="/artiklar" className="hover:text-cream">
-                Artiklar
+                ← Alla artiklar
               </a>
-              <span aria-hidden="true" className="h-1 w-1 bg-cream/25" />
-              <span className="text-cream/70">{article.kicker}</span>
             </nav>
-
-            <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-cream/70">
+            <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
               <span className="h-2.5 w-2.5 bg-brand" aria-hidden="true" />
               {article.kicker}
             </div>
-            <HighlightReveal
-              as="h1"
-              barTheme="dark"
-              className="mt-4 font-display text-5xl font-bold leading-[0.98] tracking-tightest text-cream sm:text-6xl md:text-7xl"
-              lines={article.title}
-            />
-            <p className="mt-8 max-w-2xl text-xl leading-relaxed text-cream/70">
-              {article.lede}
+            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.04] tracking-tightest text-cream sm:text-5xl">
+              {article.h1}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/70">
+              {article.metaDescription}
             </p>
-            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <BookingButton>Boka samtal</BookingButton>
               <a
                 href="#start"
@@ -239,58 +140,61 @@ export default function ArticlePage() {
           </div>
         </section>
 
-        {article.sections.map((section, i) => (
-          <SectionView key={i} section={section} index={i} />
-        ))}
-
-        {/* The exact "Låt Google hitta er" search demo from the homepage —
-            shown on the Google Ads article so readers see live search intent. */}
-        {article.slug === "vad-kostar-google-ads-tandklinik" && <SearchSpotlight />}
-
-        {/* More articles */}
+        {/* Body (cream) */}
         <section
           data-nav-theme="light"
-          className="bg-cream px-6 py-24 lg:pl-72 lg:pr-16"
+          className="bg-cream px-6 py-20 lg:pl-72 lg:pr-16"
         >
           <Reveal className="max-w-2xl">
-            <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
-              Fler artiklar
+            <div className="tx-prose prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-12 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl prose-p:text-ink/80 prose-p:leading-relaxed prose-li:text-ink/80 prose-strong:text-ink prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:text-ink prose-td:text-ink/75 prose-hr:border-ink/12">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {article.body}
+              </ReactMarkdown>
             </div>
-            <HighlightReveal
-              as="h2"
-              barTheme="light"
-              className="mt-4 font-display text-3xl font-bold leading-tight tracking-tightest text-ink sm:text-4xl"
-              lines={["Läs vidare."]}
-            />
           </Reveal>
-          <div className="mt-12 border-t border-ink/12">
-            {articles
-              .filter((a) => a.slug !== article.slug)
-              .map((a, i) => (
+        </section>
+
+        {/* Google search demo — only on the Google Ads cost guide */}
+        {article.slug === "vad-kostar-google-ads-tandlakare" && (
+          <SearchSpotlight />
+        )}
+
+        {/* Related */}
+        {related.length > 0 && (
+          <section
+            data-nav-theme="light"
+            className="border-t border-ink/10 bg-cream-soft px-6 py-20 lg:pl-72 lg:pr-16"
+          >
+            <Reveal className="max-w-2xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
+                Läs vidare
+              </div>
+              <h2 className="mt-4 font-display text-3xl font-bold tracking-tightest text-ink">
+                Relaterade guider
+              </h2>
+            </Reveal>
+            <div className="mt-10 border-t border-ink/12">
+              {related.map((a, i) => (
                 <Reveal key={a.slug} delay={i * 70}>
                   <a
                     href={`/artiklar/${a.slug}`}
-                    className="group grid grid-cols-1 gap-2 border-b border-ink/12 py-7 lg:grid-cols-[9rem_1fr_auto] lg:items-baseline lg:gap-10"
+                    className="group grid grid-cols-1 gap-2 border-b border-ink/12 py-6 lg:grid-cols-[10rem_1fr_auto] lg:items-baseline lg:gap-10"
                   >
                     <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-sage">
                       {a.kicker}
                     </span>
-                    <span>
-                      <span className="font-display text-xl font-bold tracking-tightest text-ink">
-                        {a.title.join(" ")}
-                      </span>
-                      <span className="mt-1.5 block max-w-xl text-sm leading-relaxed text-ink/60">
-                        {a.lede}
-                      </span>
+                    <span className="font-display text-xl font-bold tracking-tightest text-ink">
+                      {a.title}
                     </span>
-                    <span className="text-sm font-bold uppercase tracking-wide text-brand transition-transform group-hover:translate-x-1">
+                    <span className="text-sm font-bold uppercase tracking-wide text-ink transition-transform group-hover:translate-x-1">
                       Läs →
                     </span>
                   </a>
                 </Reveal>
               ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
