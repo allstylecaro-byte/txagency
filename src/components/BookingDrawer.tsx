@@ -32,10 +32,13 @@ export function BookingDrawer() {
   const [patients, setPatients] = useState<string[]>([]);
   const [form, setForm] = useState({
     clinic: "",
+    city: "",
     chairs: "",
     occupancy: "",
+    story: "",
     name: "",
     phone: "",
+    email: "",
   });
 
   const togglePatient = (t: string) =>
@@ -62,7 +65,7 @@ export function BookingDrawer() {
     };
   }, [open]);
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const submit = (e: React.FormEvent) => {
@@ -70,11 +73,14 @@ export function BookingDrawer() {
     const msg =
       `Hej! Jag vill boka ett samtal om marknadsföring.\n\n` +
       `Klinik: ${form.clinic || "—"}\n` +
+      `Ort: ${form.city || "—"}\n` +
       `Antal stolar: ${form.chairs || "—"}\n` +
       `Beläggning idag: ${form.occupancy || "—"}\n` +
       `Önskad patienttyp: ${patients.length ? patients.join(", ") : "—"}\n` +
+      `Om kliniken & mål: ${form.story || "—"}\n` +
       `Kontakt: ${form.name || "—"}\n` +
-      `Telefon: ${form.phone || "—"}`;
+      `Telefon: ${form.phone || "—"}\n` +
+      `E-post: ${form.email || "—"}`;
     window.open(waLink(msg), "_blank", "noopener,noreferrer");
     setSent(true);
   };
@@ -129,8 +135,22 @@ export function BookingDrawer() {
         ) : (
           <form onSubmit={submit} className="flex flex-1 flex-col overflow-y-auto px-6 py-6">
             <p className="text-sm leading-relaxed text-sage">
-              Berätta lite om kliniken så förbereder vi ett konkret förslag till samtalet — inga förpliktelser.
+              Berätta om er klinik så kommer vi till samtalet med en konkret plan —
+              var ni tappar patienter idag och vad vi skulle göra först.
             </p>
+            {/* Value props — make the call worth booking */}
+            <ul className="mt-4 space-y-2">
+              {[
+                "Gratis genomgång av hemsida, Google & synlighet",
+                "En prioriterad åtgärdslista — inte en säljpitch",
+                "Ni äger allt vi bygger. Inga bindningstider.",
+              ].map((v) => (
+                <li key={v} className="flex items-start gap-2 text-[13px] leading-snug text-ink/70">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" className="mt-0.5 shrink-0 text-brand" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {v}
+                </li>
+              ))}
+            </ul>
 
             <div className="mt-6 space-y-4">
               <div>
@@ -139,16 +159,20 @@ export function BookingDrawer() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
+                  <label className={label} htmlFor="bk-city">Ort</label>
+                  <input id="bk-city" value={form.city} onChange={set("city")} className={field} placeholder="T.ex. Stockholm" autoComplete="address-level2" />
+                </div>
+                <div>
                   <label className={label} htmlFor="bk-chairs">Antal stolar</label>
                   <input id="bk-chairs" value={form.chairs} onChange={set("chairs")} className={field} placeholder="T.ex. 3" inputMode="numeric" />
                 </div>
-                <div>
-                  <label className={label} htmlFor="bk-occ">Beläggning idag</label>
-                  <select id="bk-occ" value={form.occupancy} onChange={set("occupancy")} className={`${field} appearance-none`}>
-                    <option value="">Välj…</option>
-                    {OCC.map((o) => (<option key={o} value={o}>{o}</option>))}
-                  </select>
-                </div>
+              </div>
+              <div>
+                <label className={label} htmlFor="bk-occ">Beläggning idag</label>
+                <select id="bk-occ" value={form.occupancy} onChange={set("occupancy")} className={`${field} appearance-none`}>
+                  <option value="">Välj…</option>
+                  {OCC.map((o) => (<option key={o} value={o}>{o}</option>))}
+                </select>
               </div>
               <div>
                 <span className={label}>Vilka patienter vill ni ha fler av?</span>
@@ -169,19 +193,29 @@ export function BookingDrawer() {
                   })}
                 </div>
               </div>
+              <div>
+                <label className={label} htmlFor="bk-story">Berätta om er klinik &amp; mål <span className="font-semibold normal-case tracking-normal text-ink/30">(valfritt)</span></label>
+                <textarea id="bk-story" value={form.story} onChange={set("story")} rows={3} className={`${field} resize-none`} placeholder="Vad vill ni uppnå? Vad har ni testat? Största utmaningen just nu?" />
+              </div>
               <div className="border-t border-ink/10 pt-4">
                 <label className={label} htmlFor="bk-name">Ditt namn</label>
                 <input id="bk-name" value={form.name} onChange={set("name")} className={field} placeholder="För- och efternamn" autoComplete="name" />
               </div>
-              <div>
-                <label className={label} htmlFor="bk-phone">Telefonnummer</label>
-                <input id="bk-phone" value={form.phone} onChange={set("phone")} className={field} placeholder="07X-XXX XX XX" type="tel" autoComplete="tel" />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={label} htmlFor="bk-phone">Telefon</label>
+                  <input id="bk-phone" value={form.phone} onChange={set("phone")} className={field} placeholder="07X-XXX XX XX" type="tel" autoComplete="tel" />
+                </div>
+                <div>
+                  <label className={label} htmlFor="bk-email">E-post</label>
+                  <input id="bk-email" value={form.email} onChange={set("email")} className={field} placeholder="namn@klinik.se" type="email" autoComplete="email" />
+                </div>
               </div>
             </div>
 
             <div className="mt-auto pt-6">
               <button type="submit" className="w-full rounded-full bg-brand py-3.5 text-center text-sm font-bold text-cream transition-colors hover:bg-brand-dark">
-                Skicka & boka samtal
+                Skicka &amp; boka samtal
               </button>
               <p className="mt-3 text-center text-[11px] leading-relaxed text-ink/45">
                 Vi ringer aldrig kallt — uppgifterna används bara för att förbereda ert samtal.

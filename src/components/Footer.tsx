@@ -8,6 +8,7 @@ const services = [
   "Google Ads",
   "SEO",
   "Local SEO",
+  "AI-sök (GEO)",
   "Spårning",
   "AI-receptionist",
   "SMS vid missat samtal",

@@ -106,9 +106,10 @@ export function CalcSlider({
   );
 }
 
-// Light card shell for the per-article calculators — consistent look across
-// the knowledge bank.
-export function CalcPanelLight({
+// The ONE calculator shell used everywhere (homepage + every article), so the
+// "räkna på er klinik" tool looks identical across the site — only the content
+// differs. Dark petrol panel with a coral accent, matching the brand.
+export function CalcPanel({
   eyebrow,
   title,
   intro,
@@ -124,20 +125,33 @@ export function CalcPanelLight({
   note?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-ink/12 bg-white p-6 shadow-[0_1px_0_rgba(16,61,69,0.03),0_22px_44px_-30px_rgba(16,61,69,0.3)] sm:p-8">
-      <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand">{eyebrow}</div>
-      <h3 className="mt-2 font-display text-2xl font-bold tracking-tightest text-ink">{title}</h3>
-      {intro && <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink/60">{intro}</p>}
-      <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_16rem] lg:gap-10">
-        <div className="space-y-5">{inputs}</div>
-        <div>{result}</div>
+    <div
+      className="relative overflow-hidden rounded-3xl p-8 sm:p-10"
+      style={{ background: "linear-gradient(135deg,#0e343b,#0a2b31 60%,#123f47)" }}
+    >
+      <span
+        className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-brand/20 blur-3xl"
+        aria-hidden="true"
+      />
+      <div className="relative">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light backdrop-blur">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand" /> {eyebrow}
+        </div>
+        <h3 className="mt-5 font-display text-2xl font-bold tracking-tightest text-cream sm:text-3xl">
+          {title}
+        </h3>
+        {intro && <p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/60">{intro}</p>}
+        <div className="mt-7 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_16rem] lg:gap-12">
+          <div className="space-y-5">{inputs}</div>
+          <div className="lg:self-center">{result}</div>
+        </div>
+        {note && <p className="mt-6 max-w-2xl text-xs leading-relaxed text-cream/45">{note}</p>}
       </div>
-      {note && <p className="mt-6 text-xs leading-relaxed text-ink/45">{note}</p>}
     </div>
   );
 }
 
-// The highlighted headline result inside a light calculator.
+// The highlighted headline result inside a CalcPanel.
 export function CalcResult({
   value,
   label,
@@ -148,7 +162,7 @@ export function CalcResult({
   sub?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl bg-ink-deep p-6 text-center">
+    <div className="rounded-2xl border border-cream/12 bg-white/[0.06] p-6 text-center">
       <div className="font-display text-3xl font-bold tabular-nums tracking-tightest text-cream sm:text-4xl">
         {value}
       </div>

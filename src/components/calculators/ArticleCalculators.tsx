@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import {
   CalcSlider,
-  CalcPanelLight,
+  CalcPanel,
   CalcResult,
   CalcStat,
   formatKr,
@@ -34,17 +34,17 @@ export function GoogleAdsCalculator() {
   const cacT = useTween(cac);
 
   return (
-    <CalcPanelLight
+    <CalcPanel
       eyebrow="Räkna själv · Google Ads"
       title="Vad kostar en ny patient?"
       intro="Dra i era egna siffror så ser ni kostnad per patient (CAC) och avkastning (ROAS) direkt."
       inputs={
         <>
-          <CalcSlider label="Månadsbudget" value={budget} onChange={setBudget} min={3000} max={60000} step={500} unit=" kr" />
-          <CalcSlider label="Kostnad per klick (CPC)" value={cpc} onChange={setCpc} min={5} max={60} unit=" kr" hint="Tandvård ligger ofta 15–35 kr." />
-          <CalcSlider label="Klick → kontakt" value={clickToLead} onChange={setClickToLead} min={2} max={20} unit=" %" hint="Andel som ringer eller fyller i formulär." />
-          <CalcSlider label="Kontakt → patient" value={leadToPatient} onChange={setLeadToPatient} min={20} max={90} unit=" %" />
-          <CalcSlider label="Värde per ny patient" value={patientValue} onChange={setPatientValue} min={1000} max={40000} step={500} unit=" kr" />
+          <CalcSlider variant="dark" label="Månadsbudget" value={budget} onChange={setBudget} min={3000} max={60000} step={500} unit=" kr" />
+          <CalcSlider variant="dark" label="Kostnad per klick (CPC)" value={cpc} onChange={setCpc} min={5} max={60} unit=" kr" hint="Tandvård ligger ofta 15–35 kr." />
+          <CalcSlider variant="dark" label="Klick → kontakt" value={clickToLead} onChange={setClickToLead} min={2} max={20} unit=" %" hint="Andel som ringer eller fyller i formulär." />
+          <CalcSlider variant="dark" label="Kontakt → patient" value={leadToPatient} onChange={setLeadToPatient} min={20} max={90} unit=" %" />
+          <CalcSlider variant="dark" label="Värde per ny patient" value={patientValue} onChange={setPatientValue} min={1000} max={40000} step={500} unit=" kr" />
         </>
       }
       result={
@@ -84,16 +84,16 @@ export function SeoValueCalculator() {
   const yearlyT = useTween(yearly);
 
   return (
-    <CalcPanelLight
+    <CalcPanel
       eyebrow="Räkna själv · SEO"
       title="Vad är en topplacering värd?"
       intro="Uppskatta hur många patienter en position i Googles organiska resultat kan ge — och vad det är värt per år."
       inputs={
         <>
-          <CalcSlider label="Sökvolym / mån (ert ord)" value={volume} onChange={setVolume} min={50} max={5000} step={10} />
-          <CalcSlider label="Målposition i Google" value={position} onChange={setPosition} min={1} max={10} hint={`Uppskattad klickandel: ${formatNum(ctr, 1)} %`} />
-          <CalcSlider label="Besök → patient" value={visitToPatient} onChange={setVisitToPatient} min={1} max={15} unit=" %" />
-          <CalcSlider label="Värde per ny patient" value={patientValue} onChange={setPatientValue} min={1000} max={40000} step={500} unit=" kr" />
+          <CalcSlider variant="dark" label="Sökvolym / mån (ert ord)" value={volume} onChange={setVolume} min={50} max={5000} step={10} />
+          <CalcSlider variant="dark" label="Målposition i Google" value={position} onChange={setPosition} min={1} max={10} hint={`Uppskattad klickandel: ${formatNum(ctr, 1)} %`} />
+          <CalcSlider variant="dark" label="Besök → patient" value={visitToPatient} onChange={setVisitToPatient} min={1} max={15} unit=" %" />
+          <CalcSlider variant="dark" label="Värde per ny patient" value={patientValue} onChange={setPatientValue} min={1000} max={40000} step={500} unit=" kr" />
         </>
       }
       result={
@@ -128,16 +128,16 @@ export function PatientValueCalculator() {
   const ltvT = useTween(ltv);
 
   return (
-    <CalcPanelLight
+    <CalcPanel
       eyebrow="Räkna själv · Patientvärde"
       title="Vad är en patient värd över tid?"
       intro="En ny patient är sällan ett enda besök. Se livstidsvärdet — och hur det förhåller sig till vad ni betalar för att få patienten."
       inputs={
         <>
-          <CalcSlider label="Snittintäkt per besök" value={perVisit} onChange={setPerVisit} min={300} max={8000} step={100} unit=" kr" />
-          <CalcSlider label="Besök per år" value={visitsYear} onChange={setVisitsYear} min={1} max={6} step={0.5} />
-          <CalcSlider label="År som patient" value={years} onChange={setYears} min={1} max={20} unit=" år" />
-          <CalcSlider label="Kostnad att få patienten (CAC)" value={cac} onChange={setCac} min={200} max={20000} step={100} unit=" kr" />
+          <CalcSlider variant="dark" label="Snittintäkt per besök" value={perVisit} onChange={setPerVisit} min={300} max={8000} step={100} unit=" kr" />
+          <CalcSlider variant="dark" label="Besök per år" value={visitsYear} onChange={setVisitsYear} min={1} max={6} step={0.5} />
+          <CalcSlider variant="dark" label="År som patient" value={years} onChange={setYears} min={1} max={20} unit=" år" />
+          <CalcSlider variant="dark" label="Kostnad att få patienten (CAC)" value={cac} onChange={setCac} min={200} max={20000} step={100} unit=" kr" />
         </>
       }
       result={

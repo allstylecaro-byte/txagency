@@ -8,9 +8,11 @@ import { BookingButton } from "./BookingButton";
 // (the layout we build), with the message + pillars to its left. An original
 // demo clinic ("Nord Dental"), clearly labelled "Exempel".
 
-const TEAL = "#1c5348";
-const MINT = "#e6f2ec";
-const TINK = "#16302a";
+// CliniQ-aligned palette (matches the phone screens: soft teal + deep navy).
+const NAVY = "#123b45";
+const TEAL = "#3d8a97";
+const MINT = "#e8f1f2";
+const TINK = "#16333a";
 const TMUT = "#5f746c";
 
 const PILLARS = [
@@ -20,13 +22,13 @@ const PILLARS = [
   { label: "Mätt från dag ett", body: "Varje samtal och bokning spåras, så vi vet vad som faktiskt fungerar.", icon: <><path d="M4 19V10M10 19V4M16 19v-7" strokeLinecap="round" /><path d="M4 19h14" strokeLinecap="round" /></> },
 ];
 
-// A compact clinic homepage we build — matches the reference layout.
+// A compact clinic homepage we build — CliniQ-aligned, matching the phone.
 function MockDesktop() {
-  const stats = [
-    { n: "3 500+", l: "Nöjda patienter", d: <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" strokeLinecap="round" /> },
-    { n: "20+", l: "År av erfarenhet", d: <><circle cx="12" cy="9" r="5" /><path d="M9 13l-1.5 8L12 18l4.5 3L15 13" strokeLinejoin="round" /></> },
-    { n: "99%", l: "Patientnöjdhet", d: <path d="M7 11v9M7 11l4-8a2 2 0 0 1 3 2l-1 4h5a2 2 0 0 1 2 2.4l-1.5 6A2 2 0 0 1 20 20H7" strokeLinejoin="round" /> },
-    { n: "4 000+", l: "Friska leenden", d: <path d="M12 3c-2.5 0-4 2-4 5 0 4 2 6 2.5 9 .4 2.4 1 4 2 4s1.2-2 1.5-4c.2-1.3.5-2 2-2s1.8.7 2 2c.3 2 .5 4 1.5 4s1.6-1.6 2-4c.5-3 2.5-5 2.5-9 0-3-1.5-5-4-5-1.6 0-2.4.8-4 .8S9.6 3 8 3z" strokeLinejoin="round" /> },
+  const services: { t: string; p: string; dark?: boolean }[] = [
+    { t: "Undersökning", p: "från 495 kr" },
+    { t: "Implantat", p: "från 14 900 kr" },
+    { t: "Tandblekning", p: "1 995 kr" },
+    { t: "Akuttid", p: "995 kr", dark: true },
   ];
   return (
     <div className="overflow-hidden rounded-xl border border-ink/12 bg-white shadow-[0_1px_2px_rgba(16,61,69,0.06),0_40px_70px_-40px_rgba(16,61,69,0.4)]">
@@ -42,55 +44,52 @@ function MockDesktop() {
         <span className="text-[8px] font-bold uppercase tracking-[0.14em] text-ink/30">Exempel</span>
       </div>
 
-      {/* nav — text-only wordmark */}
-      <div className="flex items-center justify-between px-4 py-2.5">
-        <span className="leading-none" aria-hidden="true">
-          <span className="block font-display text-[13px] font-bold tracking-tightest" style={{ color: TINK }}>Nord Dental</span>
-          <span className="block text-[6px] font-bold uppercase tracking-[0.2em]" style={{ color: TEAL }}>Tandklinik</span>
+      {/* nav */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <span className="font-display text-[14px] font-bold tracking-tight" style={{ color: NAVY }}>
+          Nord<span style={{ color: TEAL }}>Dental</span>
         </span>
-        <div className="hidden items-center gap-3 text-[8.5px] font-semibold md:flex" style={{ color: TINK }}>
-          <span style={{ color: TEAL }}>Hem</span><span>Behandlingar</span><span>Priser</span><span>Om oss</span><span>Blogg</span><span>Kontakt</span>
+        <div className="hidden items-center gap-3.5 text-[8.5px] font-semibold md:flex" style={{ color: TINK }}>
+          <span style={{ color: TEAL }}>Hem</span><span>Behandlingar</span><span>Priser</span><span>Om oss</span><span>Kontakt</span>
         </div>
-        <span className="rounded-full px-2.5 py-1 text-[8px] font-bold text-white" style={{ background: TEAL }}>Boka tid</span>
+        <span className="rounded-full px-3 py-1 text-[8px] font-bold text-white" style={{ background: NAVY }}>Boka tid</span>
       </div>
 
-      {/* hero: photo right, mint blob + text left */}
-      <div className="relative mx-3 overflow-hidden rounded-xl" style={{ height: 250 }}>
+      {/* hero: photo right, navy-gradient text panel left */}
+      <div className="relative mx-3 overflow-hidden rounded-2xl" style={{ height: 210 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/clinic-hero.webp" alt="Tandläkare med patient" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "60% 45%", transform: "scaleX(-1)" }} />
-        <div className="absolute inset-y-0 left-0 flex w-[62%] flex-col justify-center p-4" style={{ background: MINT, borderRadius: "0 20px 96px 0" }}>
-          <span className="inline-flex w-fit items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[6.5px] font-bold uppercase tracking-[0.1em]" style={{ color: TEAL }}>★ Patientfokuserad tandvård</span>
-          <div className="mt-1.5 font-display text-[19px] font-bold leading-[1.02] tracking-tightest" style={{ color: TINK }}>
+        <img src="/clinic-hero.webp" alt="Tandläkare med patient" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "62% 45%", transform: "scaleX(-1)" }} />
+        <div className="absolute inset-y-0 left-0 flex w-[60%] flex-col justify-center p-4" style={{ background: `linear-gradient(120deg, ${MINT} 70%, transparent)` }}>
+          <span className="inline-flex w-fit items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[6.5px] font-bold uppercase tracking-[0.1em] shadow-sm" style={{ color: TEAL }}>
+            <svg viewBox="0 0 24 24" width="7" height="7" fill="#ffb020"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" /></svg>
+            4,9 · 320 omdömen
+          </span>
+          <div className="mt-2 font-display text-[20px] font-bold leading-[1.02] tracking-tightest" style={{ color: NAVY }}>
             Friska leenden,<br /><span style={{ color: TEAL }}>glada liv</span>
           </div>
-          <p className="mt-1 max-w-[10rem] text-[8px] leading-snug" style={{ color: TMUT }}>Mild vård, modern teknik och ett vänligt team dedikerat till ditt leende.</p>
-          <div className="mt-2.5 flex flex-wrap items-center gap-2">
-            <span className="rounded-full px-3 py-1.5 text-[8px] font-bold text-white" style={{ background: TEAL }}>Boka tid</span>
-            <span className="inline-flex items-center gap-1 text-[8px] font-semibold" style={{ color: TINK }}>
+          <p className="mt-1.5 max-w-[10.5rem] text-[8px] leading-snug" style={{ color: TMUT }}>Mild vård, modern teknik och ett team dedikerat till ditt leende.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="rounded-full px-3 py-1.5 text-[8px] font-bold text-white shadow-sm" style={{ background: NAVY }}>Boka tid →</span>
+            <span className="inline-flex items-center gap-1 text-[8px] font-semibold" style={{ color: NAVY }}>
               <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke={TEAL} strokeWidth="2" aria-hidden="true"><path d="M5 4h3l1.6 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.6V19a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z" strokeLinejoin="round" /></svg>
               071-234 56 78
             </span>
           </div>
         </div>
-        {/* counting badge over the seam */}
-        <div className="absolute left-[52%] top-1/2 flex h-[76px] w-[76px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-white text-center shadow-lg">
-          <div className="font-display text-[15px] font-bold leading-none tracking-tightest" style={{ color: TINK }}>4 000+</div>
-          <div className="mt-0.5 px-1 text-[5.5px] leading-tight" style={{ color: TMUT }}>förbättrade leenden och räknar</div>
-          <div className="mt-1 flex -space-x-1" aria-hidden="true">
-            {["#f0c27b", "#a1c4fd", "#f6a6b2"].map((c) => (<span key={c} className="h-3 w-3 rounded-full border border-white" style={{ background: c }} />))}
-          </div>
-        </div>
       </div>
 
-      {/* stats card overlapping the hero */}
-      <div className="mx-4 -mt-3 mb-4 grid grid-cols-4 gap-1 rounded-xl border border-ink/8 bg-white p-2.5 shadow-[0_10px_30px_-14px_rgba(16,48,42,0.3)]">
-        {stats.map((s, i) => (
-          <div key={s.l} className={`px-1 text-center ${i > 0 ? "border-l border-ink/8" : ""}`}>
-            <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full" style={{ background: "rgba(47,138,122,0.12)", color: TEAL }} aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8">{s.d}</svg>
-            </span>
-            <div className="mt-1 font-display text-[13px] font-bold leading-none tracking-tightest" style={{ color: TINK }}>{s.n}</div>
-            <div className="mt-0.5 text-[6.5px] font-semibold" style={{ color: TMUT }}>{s.l}</div>
+      {/* service price cards (matches the phone) — clear, even distribution */}
+      <div className="mx-4 -mt-4 mb-4 grid grid-cols-4 gap-2">
+        {services.map((s) => (
+          <div key={s.t} className="rounded-xl p-2.5 shadow-[0_10px_26px_-16px_rgba(16,48,42,0.4)]" style={{ background: s.dark ? NAVY : "#fff", border: s.dark ? "none" : "1px solid rgba(16,61,69,0.08)" }}>
+            <div className="flex items-start justify-between gap-1">
+              <div className="text-[8.5px] font-bold leading-tight" style={{ color: s.dark ? "#fff" : NAVY }}>{s.t}</div>
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full" style={{ background: s.dark ? TEAL : MINT, color: s.dark ? "#fff" : NAVY }}>
+                <svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </div>
+            <div className="mt-3 text-[7px]" style={{ color: s.dark ? "rgba(255,255,255,0.6)" : TMUT }}>Per besök</div>
+            <div className="text-[9px] font-bold" style={{ color: s.dark ? "#fff" : TEAL }}>{s.p}</div>
           </div>
         ))}
       </div>

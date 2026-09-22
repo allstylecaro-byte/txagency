@@ -111,13 +111,8 @@ export function PinnedHero() {
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-deep/50 via-ink-deep/70 to-ink-deep"
           aria-hidden="true"
         />
-      </div>
-
-      {/* Hero — content bottom-aligned, matching the reference exactly */}
-      <section
-        data-nav-theme="dark"
-        className="relative z-10 flex min-h-screen flex-col justify-end px-6 pb-24 pt-24 lg:pl-72 lg:pr-16 lg:pt-0"
-      >
+        {/* Vertical guide lines pinned to the media so they run the full height
+            of the video area (not just the first screen). */}
         <div
           className="guides pointer-events-none absolute inset-0 lg:pl-56"
           aria-hidden="true"
@@ -127,6 +122,13 @@ export function PinnedHero() {
           <span />
           <span />
         </div>
+      </div>
+
+      {/* Hero — content bottom-aligned, matching the reference exactly */}
+      <section
+        data-nav-theme="dark"
+        className="relative z-10 flex min-h-screen flex-col justify-end px-6 pb-24 pt-24 lg:pl-72 lg:pr-16 lg:pt-0"
+      >
         <div className="relative max-w-4xl">
           <div
             className="hero-rise mb-6 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cream/70"
@@ -169,18 +171,15 @@ export function PinnedHero() {
           </div>
         </div>
 
-        {/* Scroll indicator — a light segment that travels the full height of
-            the hero, down the whole video area (not a short stub). */}
-        <div className="pointer-events-none absolute right-6 top-28 bottom-24 z-10 hidden w-px overflow-hidden lg:right-16 lg:block">
-          <span className="absolute inset-0 bg-cream/12" aria-hidden="true" />
-          <span
-            className="hero-travel absolute left-0 h-24 w-px bg-gradient-to-b from-transparent via-brand to-transparent"
-            aria-hidden="true"
-          />
+        {/* Scroll indicator — a short bar with a drop wipe. */}
+        <div className="absolute bottom-8 right-6 z-10 hidden items-center gap-3 lg:right-16 lg:flex">
+          <span className="relative block h-10 w-px overflow-hidden bg-cream/20">
+            <span className="hero-drop absolute inset-0 bg-cream" aria-hidden="true" />
+          </span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-cream/50">
+            Scroll
+          </span>
         </div>
-        <span className="pointer-events-none absolute bottom-8 right-3 z-10 hidden text-[10px] font-bold uppercase tracking-[0.24em] text-cream/40 [writing-mode:vertical-rl] lg:block">
-          Scroll
-        </span>
       </section>
 
       {/* Band 1 — rent vs. equity claim */}
