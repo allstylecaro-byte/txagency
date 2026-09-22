@@ -25,6 +25,48 @@ const LIME = "#d6ec8b";
 const LIMEINK = "#3f5218";
 const SKY = "#eaf1ff";
 
+// CliniQ-inspired premium clinic palette (soft teal + deep navy) for the
+// site / booking / confirmation screens — the climax of the journey.
+const NAVY = "#123b45";
+const NAVY_DK = "#0d2c34";
+const TEAL = "#3d8a97";
+const TEAL_DK = "#2f6f7b";
+const MIST = "#e8f1f2";
+
+// A clean doctor avatar (self-contained silhouette on a soft teal disc).
+function DocAvatar({ size = 44 }: { size?: number }) {
+  return (
+    <span
+      className="relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm"
+      style={{ width: size, height: size, background: `linear-gradient(160deg, #cfe6ea, ${TEAL})` }}
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 24 24" width={size * 0.62} height={size * 0.62} fill="none">
+        <circle cx="12" cy="9" r="4" fill="#fff" opacity="0.94" />
+        <path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5" fill="#fff" opacity="0.94" />
+      </svg>
+    </span>
+  );
+}
+
+// Little star glyph for ratings.
+function Star({ s = 9 }: { s?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={s} height={s} fill="#ffd76a" aria-hidden="true">
+      <path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" />
+    </svg>
+  );
+}
+
+// Up-right arrow used on the CliniQ-style cards.
+function ArrowUR({ s = 12 }: { s?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={s} height={s} fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+      <path d="M7 17L17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const CAPS = [
   { n: "01", title: "Det börjar med en värk", body: "03:00 på natten. Någon i ert område vaknar av en värk som inte går att sova bort." },
   { n: "02", title: "De tar upp telefonen", body: "Halvvaken, i mörkret. Första reflexen är att hitta hjälp — nu, inte imorgon." },
@@ -192,138 +234,217 @@ function ScreenGoogle({ cp }: { cp: number }) {
 // ---- 3. clinic site (clean app aesthetic) ----------------------------------
 function ScreenSite({ cp }: { cp: number }) {
   const rise = ease(clamp(cp / 0.5));
+  const services: { t: string; p: string; dark?: boolean }[] = [
+    { t: "Undersökning", p: "från 495 kr" },
+    { t: "Implantat", p: "från 14 900 kr" },
+    { t: "Tandblekning", p: "1 995 kr" },
+    { t: "Akuttid", p: "995 kr", dark: true },
+  ];
   return (
-    <div className="flex h-full flex-col" style={{ background: "#eaf1fb" }}>
+    <div className="flex h-full flex-col" style={{ background: MIST }}>
       <StatusBar />
-      {/* header */}
+      {/* brand bar */}
       <div className="flex items-center justify-between px-5 pt-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm" aria-hidden="true">
-          <span className="flex flex-col gap-[3px]"><span className="h-[2px] w-3.5 rounded" style={{ background: INKC }} /><span className="h-[2px] w-3.5 rounded" style={{ background: INKC }} /><span className="h-[2px] w-2.5 rounded" style={{ background: INKC }} /></span>
+        <span className="font-display text-[15px] font-bold tracking-tight" style={{ color: NAVY }}>
+          Nord<span style={{ color: TEAL }}>Dental</span>
         </span>
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: BLUE }} aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" strokeLinecap="round"/></svg>
-        </span>
-      </div>
-      {/* hero heading */}
-      <div className="px-5 pt-2" style={{ opacity: rise, transform: `translateY(${(1 - rise) * 12}px)` }}>
-        <h3 className="font-display text-[26px] font-bold leading-[1.05] tracking-tightest" style={{ color: INKC }}>
-          Ett självsäkert leende<br /><span style={{ color: BLUE }}>förändrar allt</span>
-        </h3>
-        <p className="mt-2 text-[11px] leading-snug" style={{ color: MUT }}>Avancerad tandvård för ett friskare, ljusare leende.</p>
-      </div>
-      {/* tooth on pedestal */}
-      <div className="relative mt-1 flex h-[120px] items-center justify-center" aria-hidden="true">
-        <span className="absolute top-1 h-[104px] w-[104px] rounded-full" style={{ background: `radial-gradient(circle at 50% 40%, #ffffff, ${SKY})` }} />
-        <span className="absolute bottom-2 h-3 w-24 rounded-full bg-black/10 blur-md" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/tooth.png" alt="" className="relative h-[118px] w-auto" style={{ objectFit: "contain", filter: "drop-shadow(0 12px 14px rgba(22,35,63,0.18))" }} />
-        <span className="absolute bottom-4 right-[86px] flex h-6 w-6 items-center justify-center rounded-full text-white shadow-lg" style={{ background: BLUE }}>
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" strokeLinejoin="round"/><path d="M12 9v5M9.5 11.5h5" strokeLinecap="round"/></svg>
+        <span className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: NAVY }} aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3" strokeLinecap="round" /></svg>
+          </span>
+          <DocAvatar size={32} />
         </span>
       </div>
-      {/* stat card */}
-      <div className="mx-5 mt-1 flex items-center gap-3 rounded-2xl px-4 py-3 text-white shadow-lg" style={{ background: `linear-gradient(120deg, ${BLUE}, ${BLUE_DK})` }}>
-        <div>
-          <div className="font-display text-[26px] font-bold leading-none tracking-tightest">98%</div>
-          <div className="mt-1 text-[9px] leading-tight text-white/80">känner sig tryggare<br />efter behandling</div>
-        </div>
-        <div className="ml-auto text-right">
-          <div className="flex justify-end -space-x-1.5" aria-hidden="true">
-            {["#f0c27b", "#a1c4fd", "#f6a6b2"].map((c) => (<span key={c} className="h-6 w-6 rounded-full border-2 border-white" style={{ background: c }} />))}
-            <span className="flex h-6 items-center rounded-full border-2 border-white bg-white/20 px-1.5 text-[9px] font-bold">+2K</span>
-          </div>
-          <div className="mt-1 text-[9px] font-semibold text-white/85">Nöjda leenden</div>
-        </div>
-      </div>
-      {/* treatments */}
-      <div className="mt-3 px-5">
-        <div className="text-[12px] font-bold" style={{ color: INKC }}>Våra behandlingar</div>
-        <div className="mt-2 grid grid-cols-4 gap-1.5">
-          {[
-            { t: "Tandreglering", d: <path d="M4 9h16M4 15h16M8 9v6M12 9v6M16 9v6" strokeLinecap="round" /> },
-            { t: "Blekning", d: <path d="M12 3c-2.5 0-4 2-4 5 0 4 2 6 2.5 9 .4 2.4 1 4 2 4s1.2-2 1.5-4c.2-1.3.5-2 2-2" strokeLinecap="round" /> },
-            { t: "Implantat", d: <><path d="M12 3c2.5 0 4 2 4 5 0 3-1 4-1.5 7-.3 2-.5 5-1 5s-.7-3-1.5-3-1 3-1.5 3-.7-3-1-5C9 12 8 11 8 8c0-3 1.5-5 4-5z" /></> },
-            { t: "Allmän vård", d: <><path d="M12 21s-6-4.5-6-10a6 6 0 1 1 12 0c0 5.5-6 10-6 10z" /><path d="M12 8v4M10 10h4" strokeLinecap="round" /></> },
-          ].map((x) => (
-            <div key={x.t} className="rounded-xl bg-white px-1 py-2 text-center shadow-sm">
-              <span className="mx-auto flex h-6 w-6 items-center justify-center" style={{ color: BLUE }}>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7">{x.d}</svg>
-              </span>
-              <div className="mt-1 text-[7.5px] font-semibold leading-tight" style={{ color: INKC }}>{x.t}</div>
+      {/* hero doctor card */}
+      <div
+        className="mx-5 mt-3 rounded-3xl p-4 shadow-lg"
+        style={{ opacity: rise, transform: `translateY(${(1 - rise) * 12}px)`, background: `linear-gradient(150deg, ${TEAL}, ${NAVY})` }}
+      >
+        <div className="flex items-center gap-3">
+          <DocAvatar size={52} />
+          <div className="min-w-0">
+            <div className="text-[13px] font-bold text-white">Dr. Sofia Ek</div>
+            <div className="text-[10px] text-white/70">Implantat & estetisk tandvård</div>
+            <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-bold text-white">
+              <Star /> 4,9 · 320 omdömen
             </div>
-          ))}
+          </div>
+          <span className="ml-auto flex h-9 w-9 items-center justify-center rounded-full bg-white" style={{ color: NAVY }} aria-hidden="true">
+            <ArrowUR s={15} />
+          </span>
         </div>
       </div>
-      {/* book bar */}
-      <div className="mx-4 mb-0 mt-auto mb-4 flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: LIME }}>
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/60" style={{ color: LIMEINK }} aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4" strokeLinecap="round"/></svg>
-        </span>
-        <div>
-          <div className="text-[12px] font-bold" style={{ color: LIMEINK }}>Boka din tid</div>
-          <div className="text-[9px]" style={{ color: LIMEINK, opacity: 0.75 }}>Snabbt. Enkelt. Personligt.</div>
+      {/* find care + search */}
+      <div className="px-5 pt-4">
+        <div className="font-display text-[17px] font-bold leading-tight tracking-tightest" style={{ color: NAVY }}>
+          Hitta rätt <span style={{ color: TEAL }}>vård</span>
         </div>
-        <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-full text-white" style={{ background: INKC }} aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </span>
+        <div className="mt-2 flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke={MUT} strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3-3" strokeLinecap="round" /></svg>
+          <span className="text-[11px]" style={{ color: MUT }}>Sök behandling…</span>
+        </div>
+      </div>
+      {/* service price grid */}
+      <div className="mt-3 grid grid-cols-2 gap-2.5 px-5 pb-5">
+        {services.map((s) => (
+          <div key={s.t} className="rounded-2xl p-3 shadow-sm" style={{ background: s.dark ? NAVY : "#fff" }}>
+            <div className="flex items-start justify-between">
+              <div className="text-[11px] font-bold leading-tight" style={{ color: s.dark ? "#fff" : NAVY }}>{s.t}</div>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full" style={{ background: s.dark ? TEAL : MIST, color: s.dark ? "#fff" : NAVY }}>
+                <ArrowUR s={11} />
+              </span>
+            </div>
+            <div className="mt-5 text-[9px]" style={{ color: s.dark ? "rgba(255,255,255,0.6)" : MUT }}>Per besök</div>
+            <div className="text-[12px] font-bold" style={{ color: s.dark ? "#fff" : TEAL }}>{s.p}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-// ---- 4. booking (clean clinic style) ---------------------------------------
+// ---- 4. booking (CliniQ-style: doctor, day pills, time ruler) ---------------
 function ScreenBook({ cp }: { cp: number }) {
   const timeSel = cp > 0.45;
   const pressed = cp > 0.82;
+  const days: [string, string][] = [["Mån", "22"], ["Tis", "23"], ["Ons", "24"], ["Tor", "25"]];
+  const selDay = 2;
   return (
-    <div className="flex h-full flex-col" style={{ background: "#eaf1fb" }}>
+    <div className="flex h-full flex-col" style={{ background: MIST }}>
       <StatusBar />
-      <div className="flex-1 px-6 pt-5">
-        <div className="font-display text-[19px] font-bold tracking-tightest" style={{ color: INKC }}>Boka tid</div>
-        <p className="mt-1 text-[11px]" style={{ color: MUT }}>Konsultation · Tandimplantat · {CITY}</p>
-        <div className="mt-5 space-y-3">
-          {[["Namn", "Anna Lindqvist"], ["Telefon", "070 123 45 67"], ["Behandling", "Implantat­konsultation"]].map(([l, v]) => (
-            <div key={l} className="rounded-xl bg-white px-3 py-2 shadow-sm">
-              <div className="text-[8.5px] font-bold uppercase tracking-[0.14em]" style={{ color: MUT }}>{l}</div>
-              <div className="mt-0.5 text-[13px]" style={{ color: INKC }}>{v}</div>
-            </div>
-          ))}
-          <div>
-            <div className="text-[8.5px] font-bold uppercase tracking-[0.14em]" style={{ color: MUT }}>Välj tid</div>
-            <div className="mt-2 flex gap-2">
-              <span className="rounded-lg bg-white px-3 py-2 text-[11px] shadow-sm" style={{ color: MUT }}>14:00</span>
-              <span className="rounded-lg px-3 py-2 text-[11px] font-bold shadow-sm transition-colors" style={timeSel ? { background: BLUE, color: "#fff" } : { background: "#fff", color: INKC }}>Idag 15:30</span>
-              <span className="rounded-lg bg-white px-3 py-2 text-[11px] shadow-sm" style={{ color: MUT }}>16:15</span>
-            </div>
+      {/* header */}
+      <div className="flex items-center justify-between px-5 pt-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm" style={{ color: NAVY }} aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
+        <span className="text-[12px] font-bold" style={{ color: NAVY }}>Boka tid</span>
+        <span className="h-8 w-8" />
+      </div>
+      {/* doctor card */}
+      <div className="mx-5 mt-3 flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm">
+        <DocAvatar size={44} />
+        <div className="min-w-0">
+          <div className="text-[12px] font-bold" style={{ color: NAVY }}>Dr. Sofia Ek</div>
+          <div className="text-[10px]" style={{ color: MUT }}>Implantatkonsultation · {CITY}</div>
+        </div>
+        <span className="ml-auto inline-flex items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold text-white" style={{ background: TEAL }}>
+          <Star /> 4,9
+        </span>
+      </div>
+      {/* choose day */}
+      <div className="px-5 pt-4">
+        <div className="text-[9.5px] font-bold uppercase tracking-[0.14em]" style={{ color: MUT }}>Välj dag · januari</div>
+        <div className="mt-2 grid grid-cols-4 gap-2">
+          {days.map(([d, n], i) => {
+            const on = i === selDay;
+            return (
+              <div key={n} className="rounded-2xl py-2.5 text-center shadow-sm" style={{ background: on ? NAVY : "#fff" }}>
+                <div className="text-[9px] font-semibold" style={{ color: on ? "rgba(255,255,255,0.7)" : MUT }}>{d}</div>
+                <div className="mt-0.5 text-[15px] font-bold" style={{ color: on ? "#fff" : NAVY }}>{n}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {/* choose time — ruler */}
+      <div className="px-5 pt-4">
+        <div className="text-[9.5px] font-bold uppercase tracking-[0.14em]" style={{ color: MUT }}>Välj tid</div>
+        <div className="mt-2 rounded-2xl bg-white px-3 py-3 shadow-sm">
+          <div className="flex items-end justify-between gap-[3px]" aria-hidden="true">
+            {Array.from({ length: 28 }).map((_, i) => {
+              const major = i % 6 === 0;
+              const active = timeSel && i === 15;
+              return (
+                <span
+                  key={i}
+                  className="flex-1 rounded-full transition-all"
+                  style={{ height: active ? 26 : major ? 18 : 10, background: active ? TEAL : major ? NAVY : "rgba(18,59,69,0.18)" }}
+                />
+              );
+            })}
+          </div>
+          <div className="mt-2 flex justify-between text-[9px] font-semibold" style={{ color: MUT }}>
+            <span>08:00</span>
+            <span>09:00</span>
+            <span style={{ color: timeSel ? TEAL : MUT, fontWeight: timeSel ? 800 : 600 }}>{timeSel ? "Idag 09:30" : "10:00"}</span>
+            <span>11:00</span>
           </div>
         </div>
       </div>
-      <div className="px-6 pb-6">
-        <div className="rounded-full py-3 text-center text-[12px] font-bold text-white shadow-lg transition-transform" style={{ background: pressed ? BLUE_DK : BLUE, transform: pressed ? "scale(0.96)" : "none" }}>
-          Bekräfta bokning
+      {/* CTA */}
+      <div className="mt-auto px-5 pb-6">
+        <div
+          className="flex items-center justify-center gap-2 rounded-full py-3 text-[12px] font-bold text-white shadow-lg transition-transform"
+          style={{ background: pressed ? NAVY_DK : NAVY, transform: pressed ? "scale(0.96)" : "none" }}
+        >
+          Boka tid
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
       </div>
     </div>
   );
 }
 
-// ---- 5. confirmation (clean clinic style) ----------------------------------
+// ---- 5. confirmation (CliniQ-style ticket + attribution) --------------------
 function ScreenDone(_p: { cp: number }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center px-8 text-center" style={{ background: "#eaf1fb" }}>
-      <span className="pj-pop flex h-20 w-20 items-center justify-center rounded-full text-white shadow-lg" style={{ background: BLUE }}>
-        <svg viewBox="0 0 24 24" width="40" height="40" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-      </span>
-      <div className="mt-6 font-display text-[21px] font-bold tracking-tightest" style={{ color: INKC }}>Tack, Anna!</div>
-      <p className="mt-1 text-[12px]" style={{ color: MUT }}>Din tid är bokad.</p>
-      <div className="mt-6 w-full rounded-2xl bg-white p-4 text-left shadow-sm">
-        <div className="text-[9px] font-bold uppercase tracking-[0.14em]" style={{ color: BLUE }}>Bekräftelse</div>
-        <div className="mt-2 flex justify-between text-[11px]" style={{ color: INKC }}><span>Er Tandklinik {CITY}</span><span>Idag 15:30</span></div>
-        <div className="mt-1 flex justify-between text-[11px]" style={{ color: INKC }}><span>Implantatkonsultation</span><span>Rum 2</span></div>
+    <div className="flex h-full flex-col" style={{ background: MIST }}>
+      <StatusBar />
+      <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+        <span
+          className="pj-pop flex h-[72px] w-[72px] items-center justify-center rounded-full text-white"
+          style={{ background: TEAL, boxShadow: `0 12px 28px ${TEAL}55` }}
+        >
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
+        <div className="mt-5 font-display text-[20px] font-bold tracking-tightest" style={{ color: NAVY }}>Bokningen är klar</div>
+        <p className="mt-1 text-[11.5px] leading-snug" style={{ color: MUT }}>Vi ses, Anna. En bekräftelse ligger redan i din inkorg.</p>
+
+        {/* ticket */}
+        <div className="mt-5 w-full overflow-hidden rounded-2xl bg-white shadow-sm">
+          <div className="flex items-center gap-3 px-4 py-3" style={{ background: NAVY }}>
+            <DocAvatar size={40} />
+            <div className="min-w-0 text-left">
+              <div className="text-[12px] font-bold text-white">Dr. Sofia Ek</div>
+              <div className="text-[9.5px] text-white/70">Implantatkonsultation</div>
+            </div>
+            <div className="ml-auto text-right">
+              <div className="text-[9px] text-white/60">Onsdag</div>
+              <div className="text-[13px] font-bold text-white">09:30</div>
+            </div>
+          </div>
+          <div className="space-y-2 px-4 py-3">
+            {([["Klinik", `Nord Dental · ${CITY}`], ["Datum", "24 jan · 09:30"], ["Referens", "#1042"]] as [string, string][]).map(([k, v]) => (
+              <div key={k} className="flex justify-between text-[11px]">
+                <span style={{ color: MUT }}>{k}</span>
+                <span style={{ color: NAVY, fontWeight: 600 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* actions */}
+        <div className="mt-4 flex w-full gap-2">
+          <div className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-[10px] font-bold text-white" style={{ background: TEAL }}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="5" width="16" height="16" rx="2" /><path d="M4 9h16M8 3v4M16 3v4" strokeLinecap="round" /></svg>
+            Kalender
+          </div>
+          <div className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-[10px] font-bold shadow-sm" style={{ background: "#fff", color: NAVY }}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="6" width="16" height="12" rx="2" /><path d="M5 8l7 5 7-5" strokeLinecap="round" /></svg>
+            SMS skickat
+          </div>
+        </div>
       </div>
-      <div className="mt-4 flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-semibold" style={{ background: LIME, color: LIMEINK }}>
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        Bekräftelse skickad via SMS
+
+      {/* attribution footer — the professional angle: every new patient traced */}
+      <div className="px-6 pb-5">
+        <div
+          className="flex items-center justify-center gap-2 rounded-xl border border-dashed py-2 text-[9.5px] font-semibold"
+          style={{ borderColor: "rgba(18,59,69,0.28)", color: TEAL_DK }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: TEAL }} />
+          Ny patient · spårad från Google-sökning
+        </div>
       </div>
     </div>
   );
