@@ -72,19 +72,22 @@ export function SearchQueries({ article }: { article: Article }) {
   ).slice(0, 5);
   if (queries.length === 0) return null;
   return (
-    <div className="rounded-xl border border-ink/12 bg-white/60 p-6 sm:p-7">
+    <div>
       <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
         Sökningar den här guiden svarar på
       </div>
-      <ul className="mt-4 divide-y divide-ink/10">
+      <div className="mt-6 space-y-3">
         {queries.map((q) => (
-          <li key={q} className="flex items-center gap-3 py-3">
-            <Magnifier className="h-4 w-4 shrink-0 text-sage" />
-            <span className="text-base text-ink">{cap(q)}</span>
-          </li>
+          <div
+            key={q}
+            className="flex items-center gap-4 rounded-full bg-white px-6 py-4 shadow-[0_1px_2px_rgba(15,61,52,0.06),0_16px_34px_-22px_rgba(15,61,52,0.28)]"
+          >
+            <Magnifier className="h-5 w-5 shrink-0 text-sage" />
+            <span className="text-base text-ink sm:text-lg">{cap(q)}</span>
+          </div>
         ))}
-      </ul>
-      <p className="mt-4 text-sm leading-relaxed text-ink/50">
+      </div>
+      <p className="mt-5 text-sm leading-relaxed text-ink/50">
         Riktiga sökningar patienter gör — guiden är skriven för att er klinik
         ska synas på dem.
       </p>
