@@ -5,7 +5,6 @@ import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Solution } from "@/components/Solution";
 import { CaseStudy } from "@/components/CaseStudy";
 import { PatientJourney } from "@/components/PatientJourney";
-import { CalendarBooking } from "@/components/CalendarBooking";
 import { Process } from "@/components/Process";
 import { GoogleAdsMethod } from "@/components/GoogleAdsMethod";
 import { WebDevShowcase } from "@/components/WebDevShowcase";
@@ -29,7 +28,6 @@ export default function Home() {
         <GoogleAdsMethod />
         <WebDevShowcase />
         <WhyUs />
-        <CalendarBooking />
         <About />
       </main>
     </>
