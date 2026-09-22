@@ -74,8 +74,8 @@ function useArticleSeo(article: Article) {
           about: article.primaryKeyword,
           inLanguage: "sv-SE",
           mainEntityOfPage: url,
-          author: { "@type": "Organization", name: "TXagency" },
-          publisher: { "@type": "Organization", name: "TXagency" },
+          author: { "@type": "Organization", name: "TX Agency" },
+          publisher: { "@type": "Organization", name: "TX Agency" },
         },
         {
           "@type": "BreadcrumbList",

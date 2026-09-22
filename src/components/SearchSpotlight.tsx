@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Reveal } from "./Reveal";
 import { BookingButton } from "./BookingButton";
 
-// "Let Google find you" concept, rebuilt in the TXagency brand: a bold
+// "Let Google find you" concept, rebuilt in the TX Agency brand: a bold
 // multi-colour Google wordmark, a search field that types real dental
 // intent queries, and a Target / Optimera / Väx rail — an original take on
 // the poster idea (colourful Google + search bar + icon trio), not a copy

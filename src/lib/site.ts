@@ -1,5 +1,5 @@
 export const site = {
-  name: "TXagency",
+  name: "TX Agency",
   tagline: "Hemsidor, Google Ads, SEO och spårning för svenska tandvårdskliniker.",
   whatsappNumber: "46703302928",
 };

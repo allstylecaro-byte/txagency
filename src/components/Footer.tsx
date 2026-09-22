@@ -27,7 +27,7 @@ export function Footer() {
             Dental growth. Online.
           </p>
           <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream/50">
-            TXagency bygger och driver hemsidor, annonsering och synlighet för
+            TX Agency bygger och driver hemsidor, annonsering och synlighet för
             svenska tandvårdskliniker — mätt varje månad, med hela resan från
             sökning till bokad behandling i fokus.
           </p>
@@ -104,7 +104,7 @@ export function Footer() {
       </div>
 
       <div className="mt-6 flex flex-col gap-2 text-xs text-cream/40 sm:flex-row sm:items-center sm:justify-between">
-        <span>© {new Date().getFullYear()} TXagency</span>
+        <span>© {new Date().getFullYear()} TX Agency</span>
         <span>Byggd med samma tänk som vi säljer: mät, optimera, upprepa.</span>
       </div>
     </footer>

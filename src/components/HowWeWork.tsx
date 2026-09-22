@@ -2,7 +2,7 @@ import { Reveal } from "./Reveal";
 import { HighlightReveal } from "./HighlightReveal";
 
 // "How we work" + plain terms. Built from the agency's own model so the
-// site stands on how TXagency operates, not on a single client story.
+// site stands on how TX Agency operates, not on a single client story.
 const terms = [
   {
     big: "0 kr",

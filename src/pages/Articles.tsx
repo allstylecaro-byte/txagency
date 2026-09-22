@@ -6,7 +6,7 @@ import { articles, parts } from "@/lib/articles";
 
 export default function ArticlesIndex() {
   useEffect(() => {
-    document.title = "Kunskapsbank — SEO & marknadsföring för tandkliniker | TXagency";
+    document.title = "Kunskapsbank — SEO & marknadsföring för tandkliniker | TX Agency";
     let m = document.head.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");

@@ -41,7 +41,7 @@ export function WhyUs() {
             Vanlig byrå
           </span>
           <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
-            Med TXagency
+            Med TX Agency
           </span>
         </div>
         {rows.map((row, i) => (

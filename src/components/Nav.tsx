@@ -76,7 +76,7 @@ export function Logo({
   return (
     <a
       href={href}
-      aria-label="TXagency — Dental growth online"
+      aria-label="TX Agency — Dental growth online"
       className="inline-flex items-center leading-none"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

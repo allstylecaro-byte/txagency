@@ -15,7 +15,7 @@ const QUERY = "tandimplantat nära mig";
 const DOMAIN = "er-tandklinik.se";
 const CITY = "Stockholm";
 
-// Clean clinic-app palette (kept distinct from the TXagency brand so the phone
+// Clean clinic-app palette (kept distinct from the TX Agency brand so the phone
 // reads as a client's clinic, not our agency).
 const BLUE = "#2f6df6";
 const BLUE_DK = "#2456c8";

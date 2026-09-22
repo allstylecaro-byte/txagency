@@ -23,7 +23,7 @@ export function About() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/media/founder.webp"
-                alt="Grundaren av TXagency"
+                alt="Grundaren av TX Agency"
                 width={800}
                 height={800}
                 className="aspect-[4/5] w-full object-cover object-[50%_20%]"
@@ -35,7 +35,7 @@ export function About() {
               Hugo
             </div>
             <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
-              Grundare · TXagency
+              Grundare · TX Agency
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ export function About() {
               och driver klinikers hemsidor, annonsering och spårning idag.
             </p>
             <p className="text-cream/85">
-              TXagency är litet med flit. Ni pratar direkt med mig, inte en
+              TX Agency är litet med flit. Ni pratar direkt med mig, inte en
               account manager i tredje led — och ni äger allt vi bygger.
             </p>
           </div>
