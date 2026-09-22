@@ -78,8 +78,9 @@ function MockDesktop() {
         </div>
       </div>
 
-      {/* service price cards (matches the phone) — sit below the hero, fully visible */}
-      <div className="relative z-10 mx-4 mb-4 mt-3 grid grid-cols-4 gap-2">
+      {/* service price cards (matches the phone) — float ON TOP of the hero's
+          lower edge, fully visible above it. */}
+      <div className="relative z-20 mx-4 mb-4 -mt-8 grid grid-cols-4 gap-2">
         {services.map((s) => (
           <div key={s.t} className="rounded-xl p-2.5 shadow-[0_10px_26px_-16px_rgba(16,48,42,0.4)]" style={{ background: s.dark ? NAVY : "#fff", border: s.dark ? "none" : "1px solid rgba(16,61,69,0.08)" }}>
             <div className="flex items-start justify-between gap-1">
