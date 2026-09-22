@@ -71,29 +71,56 @@ export function SearchQueries({ article }: { article: Article }) {
     new Set([article.primaryKeyword, ...article.secondaryKeywords].filter(Boolean)),
   ).slice(0, 5);
   if (queries.length === 0) return null;
+
+  // Coral dashed highlight on location-style placeholders, like the reference.
+  const hl = (s: string) =>
+    s.split(/(nära mig|er stad|i din stad)/i).map((part, i) =>
+      /nära mig|er stad|i din stad/i.test(part) ? (
+        <span
+          key={i}
+          className="text-brand [text-decoration:underline_dashed] [text-underline-offset:4px]"
+        >
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      ),
+    );
+
   return (
-    <div>
-      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
-        Ögonblicket då någon söker
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
+      {/* Left: the moment */}
+      <div>
+        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
+          Ögonblicket då någon söker
+        </div>
+        <h2 className="mt-3 font-display text-3xl font-bold leading-[1.05] tracking-tightest text-ink sm:text-4xl">
+          Så här hittar patienten er klinik.
+        </h2>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-ink/70">
+          Innan någon väljer klinik gör de en sökning — på sitt behov och sin
+          ort, inte på ert namn. Det här skriver de, och guiden är skriven för
+          att ni ska vara kliniken de hittar.
+        </p>
       </div>
-      <h2 className="mt-3 font-display text-2xl font-bold tracking-tightest text-ink sm:text-3xl">
-        Så här hittar patienten er klinik.
-      </h2>
-      <p className="mt-4 max-w-xl text-base leading-relaxed text-ink/70">
-        Innan någon väljer klinik gör de en sökning. Det här skriver patienter —
-        och guiden är skriven för att ni ska synas på dem.
-      </p>
-      {/* Search rows, edge to edge: one card, rows flush with hairlines. */}
-      <div className="mt-6 overflow-hidden rounded-2xl border border-ink/12 bg-white shadow-[0_1px_2px_rgba(15,61,52,0.06),0_24px_50px_-30px_rgba(15,61,52,0.3)]">
-        {queries.map((q, i) => (
-          <div
-            key={q}
-            className={`flex items-center gap-4 px-6 py-4 ${i > 0 ? "border-t border-ink/10" : ""}`}
-          >
-            <Magnifier className="h-5 w-5 shrink-0 text-sage" />
-            <span className="text-base text-ink sm:text-lg">{cap(q)}</span>
-          </div>
-        ))}
+
+      {/* Right: the searches — minimal rows, edge to edge */}
+      <div className="lg:pt-2">
+        <div className="border-y border-ink/12">
+          {queries.map((q, i) => (
+            <div
+              key={q}
+              className={`flex items-center gap-3.5 py-4 ${i > 0 ? "border-t border-ink/10" : ""}`}
+            >
+              <Magnifier className="h-4 w-4 shrink-0 text-sage" />
+              <span className="text-base text-ink sm:text-lg">{hl(cap(q))}</span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-ink/50">
+          Olika sökningar, olika patienter — sidan och profilen avgör vem de
+          ringer.
+        </p>
       </div>
     </div>
   );

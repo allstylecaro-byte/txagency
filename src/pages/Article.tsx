@@ -148,8 +148,8 @@ function ArticleView({ article }: { article: Article }) {
           data-nav-theme="light"
           className="bg-cream px-6 py-20 lg:pl-72 lg:pr-16"
         >
-          {/* The searches this guide answers */}
-          <div className="mb-12 max-w-2xl">
+          {/* The moment of search — two columns, full width */}
+          <div className="mb-16">
             <SearchQueries article={article} />
           </div>
 
