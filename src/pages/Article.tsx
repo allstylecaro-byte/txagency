@@ -7,6 +7,7 @@ import { BookingButton } from "@/components/BookingButton";
 import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Reveal } from "@/components/Reveal";
 import { SearchQueries } from "@/components/ArticleExtras";
+import { getArticleCalculator } from "@/components/calculators/ArticleCalculators";
 import { getArticle, getArticleByNr, type Article } from "@/lib/articles";
 
 const SITE = "https://txagency.se";
@@ -208,6 +209,8 @@ function ArticleView({ article }: { article: Article }) {
     .filter((a): a is Article => Boolean(a))
     .slice(0, 4);
 
+  const calculator = getArticleCalculator(article.slug);
+
   return (
     <>
       <Nav />
@@ -271,6 +274,17 @@ function ArticleView({ article }: { article: Article }) {
               visually separated sections. */}
           <ArticleBody body={article.body} />
         </section>
+
+        {/* Interactive calculator — shown on articles whose topic has a formula
+            (Google Ads CAC, SEO value, patient LTV). */}
+        {calculator && (
+          <section
+            data-nav-theme="light"
+            className="border-t border-ink/10 bg-cream-soft px-6 py-16 lg:pl-72 lg:pr-16"
+          >
+            <Reveal className="max-w-3xl">{calculator}</Reveal>
+          </section>
+        )}
 
         {/* Google search demo — only on the Google Ads cost guide */}
         {article.slug === "vad-kostar-google-ads-tandlakare" && (

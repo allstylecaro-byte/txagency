@@ -4,6 +4,7 @@ import { Reveal } from "./Reveal";
 import { HighlightReveal } from "./HighlightReveal";
 import { Counter } from "./Counter";
 import { useInView } from "./useInView";
+import { RevenueCalculator } from "./calculators/RevenueCalculator";
 
 // Before/after week calendar — the marginal-economics argument made visual:
 // the chair, the room and the team are already paid for, so a fuller book
@@ -221,48 +222,10 @@ export function CalendarBooking() {
         </Reveal>
       </div>
 
-      {/* revenue räkneexempel — a refined panel that makes the marginal-economics
-          argument land in kronor. Clearly an example, never a guarantee. */}
-      <Reveal>
-        <div className="relative mt-12 overflow-hidden rounded-3xl p-8 sm:p-10" style={{ background: "linear-gradient(135deg,#0e343b,#0a2b31 60%,#123f47)" }}>
-          <span className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-brand/20 blur-3xl" aria-hidden="true" />
-          <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-14">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand" /> Räkneexempel · omsättning
-              </div>
-              <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/85">
-                Säg att <strong className="font-semibold text-cream">en</strong> av de nya
-                tiderna varje vecka blir en implantatbehandling. Bara den skillnaden —
-                ungefär ett implantat i veckan — landar ovanpå kostnader ni redan bär.
-              </p>
-              <div className="mt-5 inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl bg-black/20 px-3 py-2 text-[13px] font-semibold text-cream/70">
-                <span>1 / vecka</span><span className="text-brand-light">×</span>
-                <span>~45 veckor</span><span className="text-brand-light">×</span>
-                <span>~35 000 kr</span>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-cream/45">
-                Siffrorna är ett exempel, inte en garanti — verkligt värde beror på
-                behandlingsmix och pris hos er.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-cream/12 bg-white/[0.06] p-6 text-center lg:min-w-[15rem]">
-              <div className="flex items-baseline justify-center gap-1">
-                <span className="font-display text-3xl font-bold text-brand-light">≈</span>
-                <Counter to={1575000} className="font-display text-5xl font-bold tabular-nums tracking-tightest text-cream sm:text-6xl" />
-              </div>
-              <div className="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-brand-light">
-                kr / år i tillkommande omsättning
-              </div>
-              {/* small illustrative growth bars */}
-              <div className="mt-5 flex items-end justify-center gap-1.5" aria-hidden="true">
-                {[34, 46, 40, 58, 66, 82, 100].map((h, i) => (
-                  <span key={i} className="w-2.5 rounded-sm" style={{ height: `${h * 0.42}px`, background: i === 6 ? "#f0573f" : "rgba(233,230,221,0.22)" }} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Interactive marginal-economics calculator — the clinic drags in its
+          own numbers and sees the tillkommande årsomsättning update live. */}
+      <Reveal className="mt-12">
+        <RevenueCalculator />
       </Reveal>
 
       {/* legend + punchline */}
