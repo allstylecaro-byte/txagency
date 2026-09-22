@@ -6,6 +6,7 @@ import { Nav } from "@/components/Nav";
 import { BookingButton } from "@/components/BookingButton";
 import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Reveal } from "@/components/Reveal";
+import { TypeBadge, SerpPreview, CoverageChips } from "@/components/ArticleExtras";
 import { getArticle, getArticleByNr, type Article } from "@/lib/articles";
 
 const SITE = "https://txagency.se";
@@ -113,9 +114,11 @@ function ArticleView({ article }: { article: Article }) {
                 ← Alla artiklar
               </a>
             </nav>
-            <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
-              <span className="h-2.5 w-2.5 bg-brand" aria-hidden="true" />
-              {article.kicker}
+            <div className="mt-8 flex items-center gap-3">
+              <TypeBadge article={article} />
+              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
+                {article.kicker}
+              </span>
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold leading-[1.04] tracking-tightest text-cream sm:text-5xl">
               {article.h1}
@@ -145,6 +148,14 @@ function ArticleView({ article }: { article: Article }) {
           data-nav-theme="light"
           className="bg-cream px-6 py-20 lg:pl-72 lg:pr-16"
         >
+          {/* Structured top block: SERP preview + what the guide covers */}
+          <Reveal className="mb-12 max-w-2xl">
+            <div className="grid gap-8">
+              <SerpPreview article={article} />
+              <CoverageChips article={article} />
+            </div>
+          </Reveal>
+
           <Reveal className="max-w-2xl">
             <div className="tx-prose prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-12 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl prose-p:text-ink/80 prose-p:leading-relaxed prose-li:text-ink/80 prose-strong:text-ink prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:text-ink prose-td:text-ink/75 prose-hr:border-ink/12">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
