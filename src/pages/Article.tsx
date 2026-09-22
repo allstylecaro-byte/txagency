@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -65,14 +65,26 @@ function useArticleSeo(article: Article) {
     ld.setAttribute("data-article-ld", "1");
     ld.textContent = JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "Article",
-      headline: article.h1,
-      description: article.metaDescription,
-      about: article.primaryKeyword,
-      inLanguage: "sv-SE",
-      mainEntityOfPage: url,
-      author: { "@type": "Organization", name: "TXagency" },
-      publisher: { "@type": "Organization", name: "TXagency" },
+      "@graph": [
+        {
+          "@type": "Article",
+          headline: article.h1,
+          description: article.metaDescription,
+          about: article.primaryKeyword,
+          inLanguage: "sv-SE",
+          mainEntityOfPage: url,
+          author: { "@type": "Organization", name: "TXagency" },
+          publisher: { "@type": "Organization", name: "TXagency" },
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Hem", item: SITE },
+            { "@type": "ListItem", position: 2, name: "Artiklar", item: `${SITE}/artiklar` },
+            { "@type": "ListItem", position: 3, name: article.kicker, item: url },
+          ],
+        },
+      ],
     });
     document.head.appendChild(ld);
 
@@ -82,6 +94,103 @@ function useArticleSeo(article: Article) {
         .forEach((n) => n.remove());
     };
   }, [article]);
+}
+
+// --- Article body structuring (readability + crawlability) ---------------
+// Long guides are split into: a lead intro, an in-page table of contents with
+// jump links, then sections whose headings carry slug ids (deep-linkable and
+// scannable for both people and crawlers).
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[åä]/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function nodeText(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(nodeText).join("");
+  if (node && typeof node === "object" && "props" in node)
+    return nodeText((node as { props: { children?: ReactNode } }).props.children);
+  return "";
+}
+
+// Everything before the first "## " is the intro; the rest is the sectioned body.
+function splitIntro(body: string): { intro: string; rest: string } {
+  const i = body.search(/^##\s+/m);
+  if (i === -1) return { intro: body.trim(), rest: "" };
+  return { intro: body.slice(0, i).trim(), rest: body.slice(i) };
+}
+
+function headings(md: string): { id: string; text: string }[] {
+  const out: { id: string; text: string }[] = [];
+  const re = /^##\s+(.+?)\s*$/gm;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(md))) {
+    const text = m[1].replace(/[*_`]/g, "").trim();
+    out.push({ id: slugify(text), text });
+  }
+  return out;
+}
+
+// Give headings stable slug ids so the TOC and deep links resolve.
+const mdComponents = {
+  h2: ({ children }: { children?: ReactNode }) => (
+    <h2 id={slugify(nodeText(children))}>{children}</h2>
+  ),
+  h3: ({ children }: { children?: ReactNode }) => (
+    <h3 id={slugify(nodeText(children))}>{children}</h3>
+  ),
+};
+
+function ArticleBody({ body }: { body: string }) {
+  const { intro, rest } = splitIntro(body);
+  const toc = headings(rest);
+  return (
+    <div className="max-w-2xl">
+      {intro && (
+        <div className="tx-prose prose prose-xl max-w-none prose-p:leading-relaxed prose-p:text-ink/85 prose-a:font-medium prose-a:text-brand prose-a:underline prose-a:decoration-brand/30 prose-a:underline-offset-2 prose-strong:text-ink">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{intro}</ReactMarkdown>
+        </div>
+      )}
+
+      {toc.length >= 3 && (
+        <nav
+          aria-label="Innehåll i guiden"
+          className="my-12 rounded-xl border border-ink/12 bg-cream-soft/70 p-6 sm:p-7"
+        >
+          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand">
+            I den här guiden
+          </div>
+          <ol className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
+            {toc.map((t, i) => (
+              <li key={t.id} className="flex gap-3">
+                <span className="mt-0.5 font-display text-sm font-bold tabular-nums text-ink/30">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <a
+                  href={`#${t.id}`}
+                  className="text-[15px] font-medium leading-snug text-ink/75 transition-colors hover:text-brand"
+                >
+                  {t.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <div className="tx-prose prose prose-lg max-w-none prose-headings:scroll-mt-28 prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-14 prose-h2:border-t prose-h2:border-ink/10 prose-h2:pt-10 prose-h2:text-2xl sm:prose-h2:text-[28px] prose-h3:mt-9 prose-h3:text-xl prose-p:leading-[1.75] prose-p:text-ink/80 prose-li:leading-relaxed prose-li:text-ink/80 prose-li:marker:text-brand prose-strong:text-ink prose-a:font-medium prose-a:text-brand prose-a:underline prose-a:decoration-brand/30 prose-a:underline-offset-2 hover:prose-a:decoration-brand prose-ul:my-6 prose-ol:my-6 prose-table:my-8 prose-table:text-sm prose-th:text-ink prose-td:align-top prose-td:text-ink/75 prose-hr:my-12 prose-hr:border-ink/12 prose-blockquote:rounded-r-lg prose-blockquote:border-l-2 prose-blockquote:border-brand prose-blockquote:bg-cream-soft prose-blockquote:px-5 prose-blockquote:py-1 prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-ink/80">
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+          {rest}
+        </ReactMarkdown>
+      </div>
+    </div>
+  );
 }
 
 export default function ArticlePage() {
@@ -158,13 +267,9 @@ function ArticleView({ article }: { article: Article }) {
             <SearchQueries article={article} />
           </div>
 
-          {/* Body — rendered directly (no big transform layer, keeps scroll
-              smooth on long articles). */}
-          <div className="tx-prose prose prose-lg max-w-2xl prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tightest prose-headings:text-ink prose-h2:mt-12 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-8 prose-h3:text-xl prose-p:text-ink/80 prose-p:leading-relaxed prose-li:text-ink/80 prose-strong:text-ink prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:text-ink prose-td:text-ink/75 prose-hr:border-ink/12">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {article.body}
-            </ReactMarkdown>
-          </div>
+          {/* Body — intro lede, in-page table of contents, then anchored,
+              visually separated sections. */}
+          <ArticleBody body={article.body} />
         </section>
 
         {/* Google search demo — only on the Google Ads cost guide */}
