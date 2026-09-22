@@ -74,23 +74,27 @@ export function SearchQueries({ article }: { article: Article }) {
   return (
     <div>
       <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
-        Sökningar den här guiden svarar på
+        Ögonblicket då någon söker
       </div>
-      <div className="mt-6 space-y-3">
-        {queries.map((q) => (
+      <h2 className="mt-3 font-display text-2xl font-bold tracking-tightest text-ink sm:text-3xl">
+        Så här hittar patienten er klinik.
+      </h2>
+      <p className="mt-4 max-w-xl text-base leading-relaxed text-ink/70">
+        Innan någon väljer klinik gör de en sökning. Det här skriver patienter —
+        och guiden är skriven för att ni ska synas på dem.
+      </p>
+      {/* Search rows, edge to edge: one card, rows flush with hairlines. */}
+      <div className="mt-6 overflow-hidden rounded-2xl border border-ink/12 bg-white shadow-[0_1px_2px_rgba(15,61,52,0.06),0_24px_50px_-30px_rgba(15,61,52,0.3)]">
+        {queries.map((q, i) => (
           <div
             key={q}
-            className="flex items-center gap-4 rounded-full bg-white px-6 py-4 shadow-[0_1px_2px_rgba(15,61,52,0.06),0_16px_34px_-22px_rgba(15,61,52,0.28)]"
+            className={`flex items-center gap-4 px-6 py-4 ${i > 0 ? "border-t border-ink/10" : ""}`}
           >
             <Magnifier className="h-5 w-5 shrink-0 text-sage" />
             <span className="text-base text-ink sm:text-lg">{cap(q)}</span>
           </div>
         ))}
       </div>
-      <p className="mt-5 text-sm leading-relaxed text-ink/50">
-        Riktiga sökningar patienter gör — guiden är skriven för att er klinik
-        ska synas på dem.
-      </p>
     </div>
   );
 }
