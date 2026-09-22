@@ -29,16 +29,6 @@ export function Solution() {
       className="scroll-mt-20 bg-cream px-6 py-24 lg:pl-72 lg:pr-16"
     >
       <div className="relative">
-        <div
-          className="guides guides--dark pointer-events-none absolute inset-0"
-          aria-hidden="true"
-        >
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-
         <Reveal className="relative max-w-2xl">
           <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
             Lösningen

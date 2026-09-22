@@ -444,3 +444,19 @@ body {
   outline: 2px solid #f0573f;
   outline-offset: 3px;
 }
+
+/* Hero scroll indicator — a segment that travels the full height of the hero
+   (down the whole video area). */
+@keyframes heroTravel {
+  0% { top: -6rem; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.hero-travel {
+  top: -6rem;
+  animation: heroTravel 2.8s var(--ease-osmo) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-travel { animation: none; opacity: 0; }
+}

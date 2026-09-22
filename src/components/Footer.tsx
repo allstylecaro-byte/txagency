@@ -9,6 +9,8 @@ const services = [
   "SEO",
   "Local SEO",
   "Spårning",
+  "AI-receptionist",
+  "SMS vid missat samtal",
 ];
 
 export function Footer() {
@@ -32,27 +34,34 @@ export function Footer() {
 
         <div className="lg:justify-self-end lg:text-right">
           <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
-            Vad vi gör
+            Ring oss direkt
           </div>
-          <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 lg:justify-end">
-            {services.map((s) => (
-              <li
-                key={s}
-                className="text-xs font-bold uppercase tracking-wide text-cream/55"
-              >
-                {s}
-              </li>
-            ))}
-          </ul>
           <a
             href={waLink(defaultWaMessage)}
             target="_blank"
             rel="noopener noreferrer"
-            className="roll mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-brand-ondark hover:text-cream"
+            className="roll mt-3 inline-flex items-center gap-2 text-lg font-bold tracking-tight text-brand-ondark hover:text-cream"
           >
             <RollText>+46 70 330 29 28</RollText> <span aria-hidden="true">↗</span>
           </a>
         </div>
+      </div>
+
+      {/* Services — every type of work we do for a clinic */}
+      <div className="mt-16 border-t border-ink-line pt-8">
+        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
+          Vad vi gör
+        </div>
+        <ul className="mt-4 flex flex-wrap gap-2.5">
+          {services.map((s) => (
+            <li
+              key={s}
+              className="rounded-full border border-cream/12 bg-cream/[0.04] px-3.5 py-1.5 text-[12px] font-semibold text-cream/75"
+            >
+              {s}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {footerLinks.length > 0 && (
