@@ -36,17 +36,20 @@ export const parts: string[] = articles.reduce<string[]>((acc, a) => {
   return acc;
 }, []);
 
-// The pillar guides shown in the footer.
-export const footerArticleSlugs = [
-  "vad-ar-seo-tandlakare",
-  "lokal-seo-tandlakare",
-  "vad-kostar-google-ads-tandlakare",
-  "hemsida-for-tandlakare",
-  "fa-fler-patienter-tandklinik",
-  "tandlakare-nara-mig",
-  "seo-eller-google-ads-tandklinik",
+// The pillar guides shown in the footer — short labels (not the full SEO
+// title, which is far too long for a footer link).
+export type FooterLink = { slug: string; label: string; href: string };
+
+const footerLinkDefs: { slug: string; label: string }[] = [
+  { slug: "vad-ar-seo-tandlakare", label: "Vad är SEO?" },
+  { slug: "lokal-seo-tandlakare", label: "Lokal SEO" },
+  { slug: "vad-kostar-google-ads-tandlakare", label: "Google Ads-priser" },
+  { slug: "hemsida-for-tandlakare", label: "Hemsida" },
+  { slug: "fa-fler-patienter-tandklinik", label: "Fler patienter" },
+  { slug: "tandlakare-nara-mig", label: "Tandläkare nära mig" },
+  { slug: "seo-eller-google-ads-tandklinik", label: "SEO vs Google Ads" },
 ];
 
-export const footerArticles = footerArticleSlugs
-  .map((s) => getArticle(s))
-  .filter((a): a is Article => Boolean(a));
+export const footerLinks: FooterLink[] = footerLinkDefs
+  .filter((d) => Boolean(getArticle(d.slug)))
+  .map((d) => ({ ...d, href: `/artiklar/${d.slug}` }));

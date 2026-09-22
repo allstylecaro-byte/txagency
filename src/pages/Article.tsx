@@ -6,7 +6,7 @@ import { Nav } from "@/components/Nav";
 import { BookingButton } from "@/components/BookingButton";
 import { SearchSpotlight } from "@/components/SearchSpotlight";
 import { Reveal } from "@/components/Reveal";
-import { TypeBadge, SearchQueries } from "@/components/ArticleExtras";
+import { SearchQueries } from "@/components/ArticleExtras";
 import { getArticle, getArticleByNr, type Article } from "@/lib/articles";
 
 const SITE = "https://txagency.se";
@@ -109,18 +109,23 @@ function ArticleView({ article }: { article: Article }) {
           className="relative bg-ink-deep px-6 pb-20 pt-32 lg:pl-72 lg:pr-16 lg:pt-40"
         >
           <div className="max-w-3xl">
-            <nav className="flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-cream/40">
-              <a href="/artiklar" className="hover:text-cream">
-                ← Alla artiklar
+            {/* Breadcrumb crawler (Hem ▪ Artiklar ▪ topic) — replaces the plain
+                back link and gives crawlers a real internal-link trail. */}
+            <nav
+              aria-label="Brödsmulor"
+              className="flex flex-wrap items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-cream/40"
+            >
+              <a href="/" className="transition-colors hover:text-cream">
+                Hem
               </a>
+              <span aria-hidden="true" className="h-1.5 w-1.5 bg-cream/25" />
+              <a href="/artiklar" className="transition-colors hover:text-cream">
+                Artiklar
+              </a>
+              <span aria-hidden="true" className="h-1.5 w-1.5 bg-cream/25" />
+              <span className="text-cream">{article.kicker}</span>
             </nav>
-            <div className="mt-8 flex items-center gap-3">
-              <TypeBadge article={article} />
-              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-light">
-                {article.kicker}
-              </span>
-            </div>
-            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.04] tracking-tightest text-cream sm:text-5xl">
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.04] tracking-tightest text-cream sm:text-5xl">
               {article.h1}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-cream/70">

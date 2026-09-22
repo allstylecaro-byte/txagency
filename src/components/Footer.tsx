@@ -1,7 +1,7 @@
 import { Logo } from "./Nav";
 import { RollText } from "./ui";
 import { navItems, waLink, defaultWaMessage } from "@/lib/site";
-import { footerArticles } from "@/lib/articles";
+import { footerLinks } from "@/lib/articles";
 
 const services = [
   "Hemsida",
@@ -55,19 +55,19 @@ export function Footer() {
         </div>
       </div>
 
-      {footerArticles.length > 0 && (
+      {footerLinks.length > 0 && (
         <div className="mt-16 border-t border-ink-line pt-8">
           <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
             Populära guider
           </div>
-          <ul className="mt-4 grid grid-cols-1 gap-x-10 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3">
-            {footerArticles.map((a) => (
-              <li key={a.slug}>
+          <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2.5">
+            {footerLinks.map((l) => (
+              <li key={l.slug}>
                 <a
-                  href={`/artiklar/${a.slug}`}
-                  className="text-sm font-semibold text-cream/60 transition-colors hover:text-cream"
+                  href={l.href}
+                  className="text-[13px] font-semibold text-cream/55 transition-colors hover:text-cream"
                 >
-                  {a.title}
+                  {l.label}
                 </a>
               </li>
             ))}
