@@ -103,9 +103,17 @@ function Calendar({
 
   return (
     <figure className="m-0">
-      <div className="border border-ink/12 bg-white p-4 sm:p-5">
-        <div className="mb-3 flex items-baseline justify-between border-b border-ink/10 pb-3">
-          <span className="font-display text-base font-bold tracking-tightest text-ink">
+      <div
+        className={`rounded-2xl bg-white p-4 shadow-[0_1px_0_rgba(16,61,69,0.03),0_22px_44px_-28px_rgba(16,61,69,0.32)] ring-1 ring-inset sm:p-5 ${
+          animate ? "ring-brand/25" : "ring-ink/[0.08]"
+        }`}
+      >
+        <div className="mb-3 flex items-center justify-between border-b border-ink/10 pb-3">
+          <span className="flex items-center gap-2 font-display text-base font-bold tracking-tightest text-ink">
+            <span
+              aria-hidden="true"
+              className={`h-2 w-2 rounded-full ${animate ? "bg-brand" : "bg-ink/20"}`}
+            />
             {title}
           </span>
           <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-sage">
@@ -157,7 +165,7 @@ function Calendar({
             return (
               <span
                 key={i}
-                className={`z-10 m-[2px] flex items-center justify-center overflow-hidden rounded-[3px] px-1 text-center text-[8px] font-bold leading-tight sm:text-[9px] ${STYLE[e.type]}`}
+                className={`z-10 m-[2px] flex items-center justify-center overflow-hidden rounded-md px-1 text-center text-[8px] font-bold leading-tight sm:text-[9px] ${STYLE[e.type]}`}
                 style={{
                   gridColumn: e.day + 2,
                   gridRow: `${e.start + 2} / span ${span}`,
