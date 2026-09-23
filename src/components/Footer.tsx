@@ -23,10 +23,10 @@ export function Footer() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[auto_1fr] lg:items-end lg:gap-24">
         <div>
           <Logo />
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-brand">
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-ondark">
             Dental growth. Online.
           </p>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream/50">
+          <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream/65">
             TX Agency bygger och driver hemsidor, annonsering och synlighet för
             svenska tandvårdskliniker — mätt varje månad, med hela resan från
             sökning till bokad behandling i fokus.
@@ -34,7 +34,7 @@ export function Footer() {
         </div>
 
         <div className="lg:justify-self-end lg:text-right">
-          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
+          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/60">
             Ring oss direkt
           </div>
           <a
@@ -50,7 +50,7 @@ export function Footer() {
 
       {/* Services — every type of work we do for a clinic */}
       <div className="mt-16 border-t border-ink-line pt-8">
-        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
+        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/60">
           Vad vi gör
         </div>
         <ul className="mt-4 flex flex-wrap gap-2.5">
@@ -67,7 +67,7 @@ export function Footer() {
 
       {footerLinks.length > 0 && (
         <div className="mt-16 border-t border-ink-line pt-8">
-          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/40">
+          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-cream/60">
             Populära guider
           </div>
           <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2.5">
@@ -75,7 +75,7 @@ export function Footer() {
               <li key={l.slug}>
                 <a
                   href={l.href}
-                  className="text-[13px] font-semibold text-cream/55 transition-colors hover:text-cream"
+                  className="text-[13px] font-semibold text-cream/70 transition-colors hover:text-cream"
                 >
                   {l.label}
                 </a>
@@ -90,20 +90,20 @@ export function Footer() {
           <a
             key={item.href}
             href={item.href}
-            className="roll text-[11px] font-bold uppercase tracking-[0.12em] text-cream/50 hover:text-cream"
+            className="roll text-[11px] font-bold uppercase tracking-[0.12em] text-cream/65 hover:text-cream"
           >
             <RollText>{item.label}</RollText>
           </a>
         ))}
         <a
           href="/artiklar"
-          className="roll text-[11px] font-bold uppercase tracking-[0.12em] text-cream/50 hover:text-cream"
+          className="roll text-[11px] font-bold uppercase tracking-[0.12em] text-cream/65 hover:text-cream"
         >
           <RollText>Artiklar</RollText>
         </a>
       </div>
 
-      <div className="mt-6 flex flex-col gap-2 text-xs text-cream/40 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-6 flex flex-col gap-2 text-xs text-cream/60 sm:flex-row sm:items-center sm:justify-between">
         <span>© {new Date().getFullYear()} TX Agency</span>
         <span>Byggd med samma tänk som vi säljer: mät, optimera, upprepa.</span>
       </div>

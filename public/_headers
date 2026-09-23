@@ -1,0 +1,19 @@
+# Cache lifetimes for static files in public/ (Cloudflare static assets).
+# Hashed build output (/assets/*) gets 1 year immutable from Nitro, appended
+# below at build time. These files keep stable names, so fonts (which never
+# change in place) get 1 year and other media 30 days with background
+# revalidation. Rename a file if it must update sooner.
+/fonts/*
+  cache-control: public, max-age=31536000, immutable
+
+/media/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/icons/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.webp
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.png
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400

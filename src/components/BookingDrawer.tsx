@@ -114,7 +114,7 @@ export function BookingDrawer() {
         className={`fixed inset-0 z-[100] bg-ink-deep/60 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
       {/* panel */}
-      <aside
+      <div
         role="dialog"
         aria-modal="true"
         aria-label="Boka ett samtal"
@@ -213,7 +213,7 @@ export function BookingDrawer() {
                         type="button"
                         aria-pressed={on}
                         onClick={() => togglePatient(t)}
-                        className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold transition-colors ${on ? "border-brand bg-brand text-cream" : "border-ink/15 bg-white text-ink/70 hover:border-ink/35"}`}
+                        className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold transition-colors ${on ? "border-[#d63d25] bg-[#d63d25] text-white" : "border-ink/15 bg-white text-ink/70 hover:border-ink/35"}`}
                       >
                         {t}
                       </button>
@@ -242,7 +242,7 @@ export function BookingDrawer() {
             </div>
 
             <div className="mt-auto pt-6">
-              <button type="submit" className="w-full rounded-full bg-brand py-3.5 text-center text-sm font-bold text-cream transition-colors hover:bg-brand-dark">
+              <button type="submit" className="w-full rounded-full bg-[#d63d25] py-3.5 text-center text-sm font-bold text-white transition-colors hover:bg-[#c2361f]">
                 Skicka &amp; boka samtal
               </button>
               <p className="mt-3 text-center text-[11px] leading-relaxed text-ink/45">
@@ -251,7 +251,7 @@ export function BookingDrawer() {
             </div>
           </form>
         )}
-      </aside>
+      </div>
     </>
   );
 }

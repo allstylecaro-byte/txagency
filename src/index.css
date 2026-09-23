@@ -2,10 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Self-hosted variable fonts (latin subset, covers å ä ö). Served from our own
+   origin with a preload in <head>, so no render-blocking Google Fonts request. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+}
+
 :root {
   --ease-osmo: cubic-bezier(0.625, 0.05, 0, 1);
   --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
-  /* Loaded from Google Fonts in index.html (Next.js used next/font before). */
+  /* Self-hosted, see @font-face above. */
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -106,7 +123,7 @@ body {
 .cta009 {
   display: inline-grid;
   position: relative;
-  color: #e9e6dd; /* sand text on the forest pill */
+  color: #ffffff; /* white on deep coral: 4.6:1 (WCAG AA) */
   font-family: var(--font-body), sans-serif;
   font-weight: 700;
   font-size: 0.86rem;
@@ -135,11 +152,11 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 2.5em;
-  background: #f0573f; /* brand coral — pops on both petrol and sand */
+  background: #d63d25; /* deep coral — AA contrast for the white label */
   transition: background-color 0.25s ease;
 }
 .cta009:hover .cta009__bg {
-  background: #d8452f;
+  background: #c2361f;
 }
 /* On dark petrol sections: a sand pill with petrol text (matches the
    brand mockups). */

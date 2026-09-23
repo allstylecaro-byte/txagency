@@ -7,21 +7,21 @@ const bands = [
     no: "01",
     title: "Skicka era uppgifter",
     body: "Ett kort samtal och några rader om kliniken: era behandlingar, ert område och var ni tappar patienter idag.",
-    shade: "bg-brand-light",
+    shade: "bg-[#d63d25]",
     indent: "",
   },
   {
     no: "02",
     title: "Vi bygger och kopplar på",
     body: "Hemsida, annonser, SEO och spårning — allt satt så att det pratar ihop, och varje steg mätbart från klick till bokad tid.",
-    shade: "bg-brand",
+    shade: "bg-[#c2361f]",
     indent: "lg:ml-[6%]",
   },
   {
     no: "03",
     title: "Telefonen ringer",
     body: "Varje förfrågan landar hos er direkt, och rapporten visar antalet i svart på vitt — inte bara en känsla.",
-    shade: "bg-brand-dark",
+    shade: "bg-[#ab2e1a]",
     indent: "lg:ml-[12%]",
   },
 ];
@@ -51,20 +51,21 @@ export function StartCta() {
 
       <ol className="mt-14 list-none border-b border-ink/15 p-0">
         {bands.map((band, i) => (
-          <Reveal key={band.no} delay={i * 90}>
-            <li
-              className={`grid grid-cols-1 items-baseline gap-2 border-t border-cream/25 px-6 py-7 text-cream sm:grid-cols-[4rem_15rem_1fr] sm:gap-8 lg:w-[88%] ${band.shade} ${band.indent}`}
-            >
-              <span className="font-display text-base font-bold tabular-nums text-cream/75">
-                {band.no}
-              </span>
-              <span className="font-display text-xl font-bold leading-tight tracking-tightest">
-                {band.title}
-              </span>
-              <span className="max-w-md text-sm leading-relaxed text-cream/85">
-                {band.body}
-              </span>
-            </li>
+          <Reveal
+            key={band.no}
+            as="li"
+            delay={i * 90}
+            className={`grid grid-cols-1 items-baseline gap-2 border-t border-white/25 px-6 py-7 text-white sm:grid-cols-[4rem_15rem_1fr] sm:gap-8 lg:w-[88%] ${band.shade} ${band.indent}`}
+          >
+            <span className="font-display text-base font-bold tabular-nums text-white">
+              {band.no}
+            </span>
+            <span className="font-display text-xl font-bold leading-tight tracking-tightest">
+              {band.title}
+            </span>
+            <span className="max-w-md text-sm leading-relaxed text-white">
+              {band.body}
+            </span>
           </Reveal>
         ))}
       </ol>

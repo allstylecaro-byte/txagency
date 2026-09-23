@@ -72,7 +72,7 @@ export function Logo({
   href?: string;
 }) {
   // dark logo (dark ink on transparent) reads on light rails; light logo on dark.
-  const src = theme === "light" ? "/tx-logo-dark.png" : "/tx-logo-light.png";
+  const src = theme === "light" ? "/tx-logo-dark.webp" : "/tx-logo-light.webp";
   return (
     <a
       href={href}
@@ -80,7 +80,16 @@ export function Logo({
       className="inline-flex items-center leading-none"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="TX Agency" className="h-14 w-auto sm:h-16" />
+      <img
+        src={src}
+        alt="TX Agency"
+        width={256}
+        height={128}
+        // The logo is the mobile LCP element — fetch it first. (Lowercase
+        // attribute: React 18 doesn't know the fetchPriority prop yet.)
+        {...{ fetchpriority: "high" }}
+        className="h-14 w-auto sm:h-16"
+      />
     </a>
   );
 }
