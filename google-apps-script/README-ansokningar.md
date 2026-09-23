@@ -1,11 +1,13 @@
 # Ansökningar → Google Sheets
 
-Varje "Boka samtal"-ansökan från hemsidan sparas som en rad i ett Google-kalkylark.
+Varje "Boka samtal"-ansökan från hemsidan sparas som en rad i TX Agencys kalkylark:
+https://docs.google.com/spreadsheets/d/1fOpdCMvKZyceNTibUVoEybKDPEREG-34YhevJeakTxs/edit
+(första fliken, gid=0; ändra `SPREADSHEET_ID` / `SHEET_GID` i skriptet för ett annat ark).
 Det gäller även om besökaren aldrig skickar WhatsApp-meddelandet.
 
 ## Engångsinstallation (≈ 3 min)
 
-1. Skapa ett nytt Google-kalkylark (sheets.new), t.ex. "TX Agency – Ansökningar".
+1. Öppna kalkylarket ovan.
 2. **Tillägg → Apps Script**. Radera allt i `Code.gs` och klistra in hela `Ansokningar.gs`. Spara.
 3. **Distribuera → Ny distribution** → typ **Webbapp**
    - Kör som: **Jag**
@@ -16,7 +18,7 @@ Det gäller även om besökaren aldrig skickar WhatsApp-meddelandet.
    och publicera sajten i Lovable (Publish → Update).
 
 Test: öppna `/exec`-URL:en i webbläsaren, den ska visa `{"ok":true,…}`.
-Skicka sedan en testansökan på sajten. En rad ska dyka upp i fliken **Ansökningar**.
+Skicka sedan en testansökan på sajten. En rad ska dyka upp i första fliken.
 
 ## Kolumner
 

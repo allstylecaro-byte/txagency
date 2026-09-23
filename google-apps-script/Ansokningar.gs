@@ -1,11 +1,15 @@
 /**
  * TX Agency — booking requests ("Boka samtal") → Google Sheet.
  *
- * Paste into the sheet's Extensions → Apps Script, then deploy as a web app
+ * Paste into the lead sheet's Extensions → Apps Script, then deploy as a web app
  * (Execute as: Me, Who has access: Anyone). Put the /exec URL in
  * src/lib/site.ts → leadsEndpoint. Each form submission becomes one row.
  */
 
+// The TX Agency lead sheet, and the tab rows go into (gid in the sheet URL).
+const SPREADSHEET_ID = "1fOpdCMvKZyceNTibUVoEybKDPEREG-34YhevJeakTxs";
+const SHEET_GID = 0;
+// Used only if no tab with SHEET_GID exists.
 const SHEET_NAME = "Ansökningar";
 
 // Optional: an address to email on every new request. Leave "" for none.
@@ -65,13 +69,15 @@ function doPost(e) {
 
 // Open the /exec URL in a browser to check the deployment is live.
 function doGet() {
-  return json({ ok: true, sheet: SHEET_NAME });
+  return json({ ok: true, sheet: getSheet().getName() });
 }
 
 function getSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet =
+    ss.getSheets().find((s) => s.getSheetId() === SHEET_GID) ||
+    ss.getSheetByName(SHEET_NAME) ||
+    ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(COLUMNS.map(([h]) => h));
     sheet.setFrozenRows(1);
