@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { waLink } from "@/lib/site";
+import { captureAttribution, leadsConnected, sendLead } from "@/lib/leads";
 
 // A slide-out booking form. On desktop it slides in from the right edge as a
 // side panel; on mobile it's a full-height sheet. Opened by dispatching the
-// `tx:book` event (see BookingButton / the nav CTA). No backend — on submit it
-// composes a WhatsApp message to the agency with the answers, matching the
-// rest of the site's contact flow.
+// `tx:book` event (see BookingButton / the nav CTA). On submit the answers are
+// logged to the "Ansökningar" Google Sheet (when `site.leadsEndpoint` is set)
+// and a WhatsApp message to the agency is composed, matching the rest of the
+// site's contact flow.
 
 export const openBooking = () => {
   if (typeof window !== "undefined") window.dispatchEvent(new Event("tx:book"));
@@ -39,12 +41,14 @@ export function BookingDrawer() {
     name: "",
     phone: "",
     email: "",
+    website: "", // honeypot — hidden from people, bots fill it in
   });
 
   const togglePatient = (t: string) =>
     setPatients((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
 
   useEffect(() => {
+    captureAttribution();
     const onOpen = () => setOpen(true);
     window.addEventListener("tx:book", onOpen);
     return () => window.removeEventListener("tx:book", onOpen);
@@ -81,6 +85,18 @@ export function BookingDrawer() {
       `Kontakt: ${form.name || "—"}\n` +
       `Telefon: ${form.phone || "—"}\n` +
       `E-post: ${form.email || "—"}`;
+    sendLead({
+      clinic: form.clinic,
+      city: form.city,
+      chairs: form.chairs,
+      occupancy: form.occupancy,
+      patients: patients.join(", "),
+      story: form.story,
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      website: form.website,
+    });
     window.open(waLink(msg), "_blank", "noopener,noreferrer");
     setSent(true);
   };
@@ -126,7 +142,9 @@ export function BookingDrawer() {
             </span>
             <div className="mt-5 font-display text-2xl font-bold tracking-tightest text-ink">Tack!</div>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-sage">
-              Vi öppnade WhatsApp med dina uppgifter. Skicka meddelandet så hör vi av oss inom en arbetsdag.
+              {leadsConnected
+                ? "Vi har tagit emot dina uppgifter och hör av oss inom en arbetsdag. Vill du snabba på kan du även skicka meddelandet i WhatsApp."
+                : "Vi öppnade WhatsApp med dina uppgifter. Skicka meddelandet så hör vi av oss inom en arbetsdag."}
             </p>
             <button type="button" onClick={() => setOpen(false)} className="mt-6 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-cream">
               Stäng
@@ -134,6 +152,16 @@ export function BookingDrawer() {
           </div>
         ) : (
           <form onSubmit={submit} className="flex flex-1 flex-col overflow-y-auto px-6 py-6">
+            <input
+              type="text"
+              name="website"
+              value={form.website}
+              onChange={set("website")}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-px w-px opacity-0"
+            />
             <p className="text-sm leading-relaxed text-sage">
               Berätta om er klinik så kommer vi till samtalet med en konkret plan —
               var ni tappar patienter idag och vad vi skulle göra först.

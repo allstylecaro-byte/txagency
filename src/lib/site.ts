@@ -2,6 +2,10 @@ export const site = {
   name: "TX Agency",
   tagline: "Hemsidor, Google Ads, SEO och spårning för svenska tandvårdskliniker.",
   whatsappNumber: "46703302928",
+  // Google Apps Script web-app URL that appends each booking request as a row
+  // in the "Ansökningar" Google Sheet (see google-apps-script/Ansokningar.gs).
+  // Empty = not connected: the form still works via WhatsApp only.
+  leadsEndpoint: "",
 };
 
 export const navItems = [
