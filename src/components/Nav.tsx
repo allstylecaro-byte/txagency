@@ -104,6 +104,19 @@ export function Nav() {
   const [markerTop, setMarkerTop] = useState(0);
   const [markerVisible, setMarkerVisible] = useState(false);
 
+  // Lock page scroll while the mobile menu is open; Escape closes it.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   const logoTheme = useZoneTheme(logoRef);
   const navTheme = useZoneTheme(navRef);
   const footTheme = useZoneTheme(footRef);
@@ -219,53 +232,102 @@ export function Nav() {
         </div>
       </aside>
 
-      {/* Mobile top bar — opaque background, its own fixed cream-on-ink colors */}
-      <div className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-ink-line bg-ink/95 px-5 py-4 backdrop-blur-sm lg:hidden">
+      {/* Mobile top bar — logo + one toggle that morphs ☰ → ✕ and stays put,
+          so the same control opens and closes the menu. No framed box. */}
+      <div
+        className={`fixed inset-x-0 top-0 z-[60] flex items-center justify-between px-5 py-4 transition-colors duration-300 lg:hidden ${
+          open ? "bg-ink-deep" : "border-b border-ink-line bg-ink/95 backdrop-blur-sm"
+        }`}
+      >
         <Logo href={`${base}#top`} />
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Öppna meny"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Stäng meny" : "Öppna meny"}
           aria-expanded={open}
-          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 border border-cream/20 bg-ink/70"
+          aria-controls="mobile-menu"
+          className="group relative -mr-2 flex h-11 w-11 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
         >
-          <span className="h-px w-5 bg-cream" />
-          <span className="h-px w-5 bg-cream" />
+          <span
+            className={`absolute h-[1.5px] w-6 rounded-full bg-cream transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${
+              open ? "translate-y-0 rotate-45" : "-translate-y-[4px]"
+            }`}
+          />
+          <span
+            className={`absolute h-[1.5px] rounded-full bg-cream transition-all duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${
+              open ? "w-6 translate-y-0 -rotate-45" : "w-6 translate-y-[4px]"
+            }`}
+          />
         </button>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-ink px-6 py-6 lg:hidden">
-          <div className="flex items-center justify-between">
-            <Logo href={`${base}#top`} />
-            <button
-              type="button"
+      <div
+        id="mobile-menu"
+        aria-hidden={!open}
+        className={`fixed inset-0 z-50 flex flex-col bg-ink-deep px-6 pb-8 pt-24 transition-[opacity,visibility] duration-300 lg:hidden ${
+          open ? "visible opacity-100" : "invisible opacity-0"
+        }`}
+      >
+        <nav className="flex flex-col border-t border-cream/10">
+          {navItems.map((item, i) => (
+            <a
+              key={item.href}
+              href={`${base}${item.href}`}
               onClick={() => setOpen(false)}
-              aria-label="Stäng meny"
-              className="flex h-11 w-11 items-center justify-center border border-cream/20 text-2xl leading-none text-cream"
+              tabIndex={open ? 0 : -1}
+              style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
+              className={`group flex items-center justify-between border-b border-cream/10 py-5 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${
+                open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+              }`}
             >
-              ×
-            </button>
-          </div>
-          <nav className="mt-16 flex flex-col gap-6">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={`${base}${item.href}`}
-                onClick={() => setOpen(false)}
-                className="text-2xl font-bold uppercase tracking-tight text-cream"
+              <span className="flex items-baseline gap-4">
+                <span className="w-6 text-[11px] font-bold tabular-nums text-brand-light">
+                  {item.number}
+                </span>
+                <span className="font-display text-[1.7rem] font-semibold leading-none tracking-tight text-cream">
+                  {item.label}
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                className="text-cream/30 transition-transform group-hover:translate-x-1 group-hover:text-cream"
               >
-                <span className="text-brand-light">{item.number}</span>
-                <span className="text-cream/30">_</span>
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <span onClick={() => setOpen(false)} className="mt-auto">
+                →
+              </span>
+            </a>
+          ))}
+        </nav>
+
+        <div
+          style={{ transitionDelay: open ? "320ms" : "0ms" }}
+          className={`mt-auto transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${
+            open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+          }`}
+        >
+          <span onClick={() => setOpen(false)} className="block">
             <BookingButton full>Boka samtal</BookingButton>
           </span>
+          <div className="mt-5 flex items-center justify-between text-[13px] font-semibold">
+            <a
+              href={waLink(defaultWaMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={open ? 0 : -1}
+              className="text-cream/60 hover:text-cream"
+            >
+              +46 70 330 29 28
+            </a>
+            <a
+              href="/artiklar"
+              onClick={() => setOpen(false)}
+              tabIndex={open ? 0 : -1}
+              className="text-cream/60 hover:text-cream"
+            >
+              Artiklar →
+            </a>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Top-right CTA (desktop) — red, pops over any section */}
       <div className="fixed right-6 top-6 z-40 hidden lg:block">
